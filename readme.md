@@ -2,6 +2,18 @@
 
 ## How to run
 
+Just service the root directory with a static file server.
+
+### Python
+
+Lots of machines come with Python already installed.
+
+```sh
+python -m SimpleHTTPServer &
+```
+
+### Node
+
 Install ```http-server```.
 
 ```sh
