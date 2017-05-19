@@ -10,4 +10,6 @@ npm install http-server -g
 
 Run ```http-server``` in the root directory.
 
-```http-server```
+```
+http-server
+```
