@@ -11,7 +11,7 @@ angular.module('chatApp', ['open-chat-framework'])
                     restore: false
                 }
             },
-            globalChannel: 'ocf-demo-angular-3'
+            globalChannel: 'ocf-demo-angular-6'
         });
 
         // bind open chat framework angular plugin
