@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import OpenChatFramework from '../../../src/index.js'
+import OpenChatFramework from 'ocf'
 
 const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const OCF = OpenChatFramework.create({
     rltm: {
-        service: 'pubnub', 
+        service: 'pubnub',
         config: {
             publishKey: 'pub-c-ea1b85f7-8895-4514-b0e0-b505eaaa1b62',
             subscribeKey: 'sub-c-7397fa12-43a3-11e6-bfbb-02ee2ddab7fe',
@@ -32,7 +32,7 @@ var Message = React.createClass({
 });
 
 var Chat = React.createClass({
-  
+
   getInitialState: function() {
     return {
         messages: [],
@@ -45,9 +45,9 @@ var Chat = React.createClass({
   },
 
   sendChat: function() {
-    
+
     if(this.state.chatInput) {
-        
+
         OCF.globalChat.send('message', {
             text: this.state.chatInput
         });
@@ -59,7 +59,7 @@ var Chat = React.createClass({
   },
 
   componentDidMount: function() {
-    
+
     OCF.globalChat.on('message', (payload) => {
 
         let messages = this.state.messages;
