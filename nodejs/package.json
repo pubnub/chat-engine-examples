@@ -1,0 +1,14 @@
+{
+  "name": "ocf-bot-example",
+  "version": "0.0.1",
+  "description": "Example OCF NodeJS bot",
+  "main": "bot.js",
+  "scripts": {
+    "test": "node bot.js"
+  },
+  "author": "Ian Jennings",
+  "dependencies": {
+    "ocf": "0.0.5",
+    "ocf-typing-indicator": "0.0.1"
+  }
+}

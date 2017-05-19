@@ -18,16 +18,11 @@ angular.module('chatApp', ['open-chat-framework'])
         ngOCF.bind($rootScope.OCF);
 
         $rootScope.OCF.onAny((event, data) => {
-            console.log(event, data);
+            console.log(event, data.user.state());
         });
 
         // create a user for myself and store as ```me```
         $rootScope.me = $rootScope.OCF.connect(new Date().getTime());
-
-        console.log(OpenChatFramework.plugin)
-        console.log(OpenChatFramework.plugin['ocf-random-username'])
-        console.log(OpenChatFramework.plugin['ocf-random-username']())
-        console.log(OpenChatFramework.plugin['ocf-random-username']($rootScope.OCF.globalChat))
 
         $rootScope.me.plugin(OpenChatFramework.plugin['ocf-random-username']($rootScope.OCF.globalChat));
 
