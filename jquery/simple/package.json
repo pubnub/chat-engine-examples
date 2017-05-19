@@ -1,0 +1,13 @@
+{
+  "name": "ocf-jquery-simple",
+  "version": "0.0.1",
+  "description": "Simple demo for jQuery and OCF",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ian Jennings",
+  "dependencies": {
+    "ocf": "0.0.5"
+  }
+}
