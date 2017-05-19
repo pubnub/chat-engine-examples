@@ -18,7 +18,7 @@ angular.module('chatApp', ['open-chat-framework'])
         ngOCF.bind($rootScope.OCF);
 
         $rootScope.OCF.onAny((event, data) => {
-            console.log(event, data.user.state());
+            console.log(event, data);
         });
 
         // create a user for myself and store as ```me```
