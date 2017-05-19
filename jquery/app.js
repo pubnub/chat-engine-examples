@@ -6,16 +6,16 @@ const setup = function() {
     // OCF Configure
     OCF = OpenChatFramework.create({
         rltm: {
-            // service: 'pubnub',
-            // config: {
-            //     publishKey: 'demo',
-            //     subscribeKey: 'demo',
-            //     restore: false
-            // }
-            service: 'socketio',
+            service: 'pubnub',
             config: {
-                endpoint: 'localhost:9000'
+                publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
+                subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f',
+                restore: false
             }
+            // service: 'socketio',
+            // config: {
+            //     endpoint: 'localhost:9000'
+            // }
         },
         globalChannel: 'ocf-demo-jquery-kitchensink-17'
     });
