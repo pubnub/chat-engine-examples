@@ -47,10 +47,10 @@
     const textInput = document.getElementById('chat-input');
     const textOutput = document.getElementById('chat-output');
 
-    const OCF = OpenChatFramework.create('ocf-javascript-demo', {
+    const OCF = OpenChatFramework.create({
         publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
         subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
-    });
+    }, 'ocf-javascript-demo');
 
     let me = OCF.connect(username, {
         signedOnTime: now
