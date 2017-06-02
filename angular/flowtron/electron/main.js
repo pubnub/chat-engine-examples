@@ -5,8 +5,8 @@ const url = require('url');
 // // desktop notification icon
 // const notifier = require('node-notifier');
 // ipcMain.on('notify', (event, arg) => {
-   
-//   // Object 
+
+//   // Object
 //   notifier.notify(arg);
 
 // });
@@ -18,14 +18,14 @@ let win
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 800, 
+    width: 800,
     height: 600,
     webPreferences: {
     }
   });
 
   // and load the index.html of the app.
-  win.loadURL('http://localhost:8000/examples/flowtron/', {"extraHeaders" : "pragma: no-cache\n"})
+  win.loadURL('http://localhost:8000/angular/flowtron/#!/dash/Main', {"extraHeaders" : "pragma: no-cache\n"})
   // win.loadURL('http://google.com')
 
   // Open the DevTools.
