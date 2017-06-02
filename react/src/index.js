@@ -7,15 +7,9 @@ const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const OCF = OpenChatFramework.create({
-    rltm: {
-        service: 'pubnub',
-        config: {
-            publishKey: 'pub-c-ea1b85f7-8895-4514-b0e0-b505eaaa1b62',
-            subscribeKey: 'sub-c-7397fa12-43a3-11e6-bfbb-02ee2ddab7fe',
-        }
-    },
-    globalChannel: 'ocf-demo-react'
-});
+  publishKey: 'pub-c-ea1b85f7-8895-4514-b0e0-b505eaaa1b62',
+  subscribeKey: 'sub-c-7397fa12-43a3-11e6-bfbb-02ee2ddab7fe'
+}, 'ocf-demo-react');
 
 OCF.connect(username, {
     signedOnTime: now
@@ -48,7 +42,7 @@ var Chat = React.createClass({
 
     if(this.state.chatInput) {
 
-        OCF.globalChat.send('message', {
+        OCF.globalChat.emit('message', {
             text: this.state.chatInput
         });
 

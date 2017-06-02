@@ -4,7 +4,7 @@
   "description": "Examples of OCF for a ton of frameworks",
   "main": "index.html",
   "dependencies": {
-    "ocf": "^0.1.9",
+    "ocf": "^0.1.11",
     "ocf-desktop-notifications": "^0.0.1",
     "ocf-emoji": "^0.0.4",
     "ocf-history": "^0.0.4",
