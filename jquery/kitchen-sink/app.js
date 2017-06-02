@@ -5,20 +5,9 @@ const setup = function() {
 
     // OCF Configure
     OCF = OpenChatFramework.create({
-        rltm: {
-            service: 'pubnub',
-            config: {
-                publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
-                subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f',
-                restore: false
-            }
-            // service: 'socketio',
-            // config: {
-            //     endpoint: 'localhost:9000'
-            // }
-        },
-        globalChannel: 'ocf-demo-jquery-kitchensink-17'
-    });
+        publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
+        subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
+    }, 'ocf-demo-jquery-kitchensink-17');
 
     OCF.onAny((event, data) => {
         console.log(event, data);
@@ -129,7 +118,7 @@ const renderUser = function($el, user, chat) {
         renderChat(newChat);
 
         // send the clicked user a private message telling them we invited them
-        user.direct.send('private-invite', {channel: newChat.channel});
+        user.direct.emit('private-invite', {channel: newChat.channel});
 
     });
 
@@ -211,7 +200,7 @@ const renderChat = function(privateChat) {
         privateChat.typingIndicator.stopTyping();
 
         // send the mssage over the network
-        privateChat.send('message', {
+        privateChat.emit('message', {
             text: $tpl.find('.message').val()
         });
 
