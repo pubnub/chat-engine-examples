@@ -4,16 +4,9 @@ let OpenChatFramework = require('ocf');
 let typingIndicator = require('ocf-typing-indicator');
 
 var OCF = OpenChatFramework.create({
-    rltm: {
-        service: 'pubnub',
-        config: {
-            publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
-            subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f',
-            restore: false
-        }
-    },
-    globalChannel: 'ocf-demo-angular-6'
-});
+    publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
+    subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
+}, 'ocf-demo-angular-6');
 
 OCF.onAny((payload) => {
     console.log('any', payload)
@@ -37,7 +30,7 @@ me.direct.on('private-invite', (payload) => {
             timeout: 5000
         }));
 
-        chat.send('message', 'hey, how can I help you?');
+        chat.emit('message', 'hey, how can I help you?');
 
         chat.on('message', (payload) => {
 
@@ -49,7 +42,10 @@ me.direct.on('private-invite', (payload) => {
 
                     setTimeout((argument) => {
 
-                        chat.send('message', 'hey there ' + payload.sender.state().username);
+                        console.log(payload.sender)
+                        console.log(chat.users)
+
+                        chat.emit('message', 'hey there ' + payload.sender.state().username);
 
                         chat.typingIndicator.stopTyping(); // add this to plugin middleware
 
