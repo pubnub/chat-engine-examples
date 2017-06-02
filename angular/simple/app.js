@@ -3,16 +3,9 @@ angular.module('chatApp', ['open-chat-framework'])
 
         // OCF Configure
         $rootScope.OCF = OpenChatFramework.create({
-            rltm: {
-                service: 'pubnub',
-                config: {
-                    publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
-                    subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f',
-                    restore: false
-                }
-            },
-            globalChannel: 'ocf-demo-angular-6'
-        });
+            publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
+            subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
+        }, 'ocf-demo-angular-6');
 
         // bind open chat framework angular plugin
         ngOCF.bind($rootScope.OCF);
@@ -52,7 +45,7 @@ angular.module('chatApp', ['open-chat-framework'])
 
         // send a message using the messageDraft input
         $scope.sendMessage = () => {
-            $scope.chat.send('message', $scope.messageDraft);
+            $scope.chat.emit('message', $scope.messageDraft);
             $scope.messageDraft = '';
         }
 
@@ -104,7 +97,7 @@ angular.module('chatApp', ['open-chat-framework'])
             console.log('sending invite to ', user, channel)
 
             // send the clicked user a private message telling them we invited them
-            user.direct.send('private-invite', {channel: channel});
+            user.direct.emit('private-invite', {channel: channel});
 
         }
 
