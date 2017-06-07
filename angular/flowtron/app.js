@@ -147,7 +147,6 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                 room.chat.plugin(OpenChatFramework.plugin['ocf-emoji']());
                 room.chat.plugin(OpenChatFramework.plugin['ocf-markdown']());
                 room.chat.plugin(OpenChatFramework.plugin['ocf-typing-indicator']());
-                room.chat.plugin(OpenChatFramework.plugin['ocf-history']());
                 room.chat.plugin(OpenChatFramework.plugin['ocf-unread-messages']());
                 room.chat.plugin(OpenChatFramework.plugin['ocf-desktop-notifications']({
                     title: (event) => {
@@ -193,6 +192,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                     addMessage(payload, '$history.message');
 
                 });
+                room.chat.history('message');
 
                 room.chat.on('message', function(payload) {
 
