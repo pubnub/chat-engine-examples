@@ -4,22 +4,14 @@
   "description": "Examples of OCF for a ton of frameworks",
   "main": "index.html",
   "dependencies": {
-<<<<<<< HEAD
-    "ocf": "^0.1.11",
-=======
     "ocf": "^0.1.14",
->>>>>>> events-own-channel
     "ocf-desktop-notifications": "^0.0.1",
     "ocf-emoji": "^0.0.4",
     "ocf-history": "^0.0.4",
     "ocf-markdown": "^0.0.3",
     "ocf-online-user-search": "0.0.1",
     "ocf-random-username": "^0.0.1",
-<<<<<<< HEAD
     "ocf-typing-indicator": "^0.0.3",
-=======
-    "ocf-typing-indicator": "0.0.3",
->>>>>>> events-own-channel
     "ocf-unread-messages": "^0.0.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
