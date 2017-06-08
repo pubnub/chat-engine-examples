@@ -1,18 +1,18 @@
 "use strict";
 
-let OpenChatFramework = require('ocf');
-let typingIndicator = require('ocf-typing-indicator');
+let ChatEngineCore = require('chat-engine');
+let typingIndicator = require('chat-engine-typing-indicator');
 
-var OCF = OpenChatFramework.create({
+var ChatEngine = ChatEngineCore.create({
     publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
     subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
-}, 'ocf-demo-angular-6');
+}, 'chat-engine-jquery-kitchen-sink');
 
-OCF.onAny((payload) => {
+ChatEngine.onAny((payload) => {
     console.log('any', payload)
 })
 
-var me = OCF.connect('robot-stephen', {username: 'robot-stephen'});
+var me = ChatEngine.connect('robot-stephen', {username: 'robot-stephen'});
 
 var chats = {};
 
@@ -22,7 +22,7 @@ me.direct.on('private-invite', (payload) => {
 
     if(!chat) {
 
-        chats[payload.data.channel] = new OCF.Chat(payload.data.channel);
+        chats[payload.data.channel] = new ChatEngine.Chat(payload.data.channel);
 
         chat = chats[payload.data.channel];
 
@@ -42,7 +42,7 @@ me.direct.on('private-invite', (payload) => {
 
                     setTimeout((argument) => {
 
-                        console.log(payload.sender)
+                        console.log(payload.sender.state())
                         console.log(chat.users)
 
                         chat.emit('message', 'hey there ' + payload.sender.state().username);

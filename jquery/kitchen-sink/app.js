@@ -55,7 +55,7 @@ const $messageTemplate = function(payload, classes) {
     let html =
         '<div class="'+classes+'">' +
             '<p class="text-muted username">' + payload.sender.state().username + '</p>' +
-            '<p>' + payload.data.text + '</p>' +
+            '<p>' + payload.data + '</p>' +
         '</div>';
 
     return $(html);
@@ -146,23 +146,23 @@ const renderOnlineList = function($el, chat) {
     }
 
     // when someone joins the chat
-    chat.on('$chat-engine.online', (payload) => {
+    chat.on('$.online', (payload) => {
         // render the user in the online list and bind events
         renderUser($el, payload.user, chat);
     });
 
     // when someone joins the chat
-    chat.on('$chat-engine.online', (payload) => {
+    chat.on('$.online', (payload) => {
         // render the user in the online list and bind events
         renderUser($el, payload.user, chat);
     });
 
-    chat.on('$chat-engine.disconnect', (payload) => {
+    chat.on('$.disconnect', (payload) => {
         renderUser($el, payload.user, chat);
     });
 
     // when someone leaves the chat
-    chat.on('$chat-engine.leave', (payload) => {
+    chat.on('$.leave', (payload) => {
         // remove the user from the online list
         $('.' + payload.user.uuid).remove();
     });
@@ -200,9 +200,7 @@ const renderChat = function(privateChat) {
         privateChat.typingIndicator.stopTyping();
 
         // send the mssage over the network
-        privateChat.emit('message', {
-            text: $tpl.find('.message').val()
-        });
+        privateChat.emit('message', $tpl.find('.message').val());
 
         // empty the input
         $tpl.find('.message').val('');
