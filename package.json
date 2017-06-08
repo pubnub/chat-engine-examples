@@ -9,7 +9,7 @@
     "chat-engine-emoji": "0.0.x",
     "chat-engine-markdown": "0.0.x",
     "chat-engine-online-user-search": "0.0.x",
-    "chat-engine-random-username": "0.0.x",
+    "chat-engine-random-username": "0.0.3",
     "chat-engine-typing-indicator": "0.0.x",
     "chat-engine-unread-messages": "0.0.x",
     "react": "15.4.2",

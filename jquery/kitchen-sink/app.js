@@ -1,15 +1,15 @@
 let me;
-let OCF;
+let ChatEngine;
 
 const setup = function() {
 
-    // OCF Configure
-    OCF = OpenChatFramework.create({
+    // ChatEngine Configure
+    ChatEngine = ChatEngineCore.create({
         publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
         subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
-    }, 'ocf-demo-jquery-kitchensink-17');
+    }, 'chat-engine-jquery-kitchen-sink');
 
-    OCF.onAny((event, data) => {
+    ChatEngine.onAny((event, data) => {
         console.log(event, data);
     });
 
@@ -80,14 +80,14 @@ const $userTemplate = function(user, chat) {
 const identifyMe = function() {
 
     // create a user for myself and store as ```me```
-    me = OCF.connect(new Date().getTime().toString());
+    me = ChatEngine.connect(new Date().getTime().toString());
 
-    me.plugin(OpenChatFramework.plugin['ocf-random-username'](OCF.globalChat));
+    me.plugin(ChatEngineCore.plugin['chat-engine-random-username'](ChatEngine.globalChat));
 
     // when I get a private invite
     me.direct.on('private-invite', (payload) => {
         // create a new chat and render it in DOM
-        renderChat(new OCF.Chat(payload.data.channel));
+        renderChat(new ChatEngine.Chat(payload.data.channel));
     });
 
     // render the value of me in the GUI
@@ -97,11 +97,11 @@ const identifyMe = function() {
 
 // GUI render functions
 
-// render a OCF.User object in a list
+// render a ChatEngine.User object in a list
 const renderUser = function($el, user, chat) {
 
     // render user in this chat with their state from globalChat
-    let $tpl = $userTemplate(user, OCF.globalChat);
+    let $tpl = $userTemplate(user, ChatEngine.globalChat);
 
     // listen for a click on the user
     $tpl.find('a').click(() => {
@@ -110,7 +110,7 @@ const renderUser = function($el, user, chat) {
         let chan = [user.uuid, me.uuid].sort().join(':');
 
         // create a new chat with that channel
-        let newChat = new OCF.Chat(chan);
+        let newChat = new ChatEngine.Chat(chan);
 
         console.log(newChat, chan)
 
@@ -138,7 +138,7 @@ const renderUser = function($el, user, chat) {
 
 };
 
-// turn OCF.Chat into an online list
+// turn ChatEngine.Chat into an online list
 const renderOnlineList = function($el, chat) {
 
     for(var key in chat.users) {
@@ -146,34 +146,34 @@ const renderOnlineList = function($el, chat) {
     }
 
     // when someone joins the chat
-    chat.on('$ocf.online', (payload) => {
+    chat.on('$chat-engine.online', (payload) => {
         // render the user in the online list and bind events
         renderUser($el, payload.user, chat);
     });
 
     // when someone joins the chat
-    chat.on('$ocf.online', (payload) => {
+    chat.on('$chat-engine.online', (payload) => {
         // render the user in the online list and bind events
         renderUser($el, payload.user, chat);
     });
 
-    chat.on('$ocf.disconnect', (payload) => {
+    chat.on('$chat-engine.disconnect', (payload) => {
         renderUser($el, payload.user, chat);
     });
 
     // when someone leaves the chat
-    chat.on('$ocf.leave', (payload) => {
+    chat.on('$chat-engine.leave', (payload) => {
         // remove the user from the online list
         $('.' + payload.user.uuid).remove();
     });
 
-    chat.plugin(OpenChatFramework.plugin['ocf-typing-indicator']({
+    chat.plugin(ChatEngineCore.plugin['chat-engine-typing-indicator']({
         timeout: 5000
     }));
 
 }
 
-// turn OCF.Chat into a chatroom
+// turn ChatEngine.Chat into a chatroom
 const renderChat = function(privateChat) {
 
     let $tpl = $chatTemplate(privateChat);
@@ -187,7 +187,7 @@ const renderChat = function(privateChat) {
         // if that keypress was not "Enter"
         if(e.which != 13) {
 
-            // then tell OCF this user is typing
+            // then tell ChatEngine this user is typing
             privateChat.typingIndicator.startTyping();
         }
 
@@ -196,7 +196,7 @@ const renderChat = function(privateChat) {
     // when someone submits a message
     $tpl.find('.send-message').submit(() => {
 
-        // tell OCF this user stopped typing
+        // tell ChatEngine this user stopped typing
         privateChat.typingIndicator.stopTyping();
 
         // send the mssage over the network
@@ -290,7 +290,7 @@ const renderChat = function(privateChat) {
 // bind the input from the search bar to the usernameSearch plugin
 const bindUsernamePlugin = function() {
 
-    OCF.globalChat.plugin(OpenChatFramework.plugin['ocf-online-user-search']());
+    ChatEngine.globalChat.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']());
 
     // when someone types in the username search
     $('#usernameSearch').on('change keyup paste click blur', () => {
@@ -303,7 +303,7 @@ const bindUsernamePlugin = function() {
 
             // call the plugin function to find out if that search query
             // matches anyone's username
-            let online = OCF.globalChat.onlineUserSearch.search(val);
+            let online = ChatEngine.globalChat.onlineUserSearch.search(val);
 
             // hide all the users
             $('#online-list').find('.list-group-item').hide();
@@ -325,15 +325,15 @@ const bindUsernamePlugin = function() {
 
 }
 
-// setup the OCF framework
+// setup the ChatEngine framework
 setup();
 
 // set up the concept of me and globalChat
 identifyMe();
 
-// render the OCF.globalChat now that it's defined
+// render the ChatEngine.globalChat now that it's defined
 // this onlineList can spawn other chats
-renderOnlineList($('#online-list'), OCF.globalChat);
+renderOnlineList($('#online-list'), ChatEngine.globalChat);
 
 // plug the search bar into the username plugin
 bindUsernamePlugin();
