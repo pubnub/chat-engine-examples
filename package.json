@@ -11,7 +11,7 @@
     "ocf-markdown": "^0.0.3",
     "ocf-online-user-search": "0.0.1",
     "ocf-random-username": "^0.0.1",
-    "ocf-typing-indicator": "^0.0.3",
+    "ocf-typing-indicator": "0.0.3",
     "ocf-unread-messages": "^0.0.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
