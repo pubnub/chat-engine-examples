@@ -86,7 +86,7 @@
 
         onlineOutput.appendChild(div);
 
-        users[uuid].feed.on('$ocf.online', (payload) => {
+        users[uuid].feed.on('$.online', (payload) => {
 
             // if user is subscribed to their own feed
             if(uuid == payload.user.uuid) {
