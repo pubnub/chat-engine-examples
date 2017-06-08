@@ -42,7 +42,7 @@ me.direct.on('private-invite', (payload) => {
 
                     setTimeout((argument) => {
 
-                        console.log(payload.sender.state())
+                        console.log(payload.sender.state() )
                         console.log(chat.users)
 
                         chat.emit('message', 'hey there ' + payload.sender.state().username);
