@@ -8,14 +8,14 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
         lockProvider.init({
           clientID: 'BiY_C0X0jFeVZ8KlxFqMKwT1xrn96xTM',
-          domain: 'pubnub-ocf.auth0.com',
+          domain: 'pubnub-chat-engine.auth0.com',
             options: {
               _idTokenVerification: false
             }
         });
 
     })
-    .run(function($rootScope, lock, Me, OCF, $state) {
+    .run(function($rootScope, lock, Me, ChatEngine, $state) {
 
         // For use with UI Router
         lock.interceptHash();
@@ -25,7 +25,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         if(profile && profile.length) {
 
             profile = JSON.parse(profile);
-            Me.profile = OCF.connect(profile.user_id, profile);
+            Me.profile = ChatEngine.connect(profile.user_id, profile);
 
         }
 
@@ -41,8 +41,8 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                 localStorage.setItem('profile', JSON.stringify(profile));
 
-                // connect to OCF
-                Me.profile = OCF.connect(profile.user_id, profile);
+                // connect to ChatEngine
+                Me.profile = ChatEngine.connect(profile.user_id, profile);
 
                 $state.go('dash')
 
@@ -57,22 +57,22 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         }
 
     })
-    .factory('OCF', function(ngOCF) {
+    .factory('ChatEngine', function(ngChatEngine) {
 
-        // OCF Configure
-        let OCF = OpenChatFramework.create({
+        // ChatEngine Configure
+        let ChatEngine = ChatEngineCore.create({
             publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
             subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
-        }, 'ocf-demo-angular-3');
+        }, 'chat-engine-demo-angular-3');
 
         // bind open chat framework angular plugin
-        ngOCF.bind(OCF);
+        ngChatEngine.bind(ChatEngine);
 
-        OCF.onAny((event, data) => {
+        ChatEngine.onAny((event, data) => {
             // console.log(event, data);
         });
 
-        return OCF;
+        return ChatEngine;
 
     })
     .config(function($stateProvider, $urlRouterProvider) {
@@ -96,7 +96,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                 controller: 'Chat'
             })
     })
-    .factory('Rooms', function(OCF, Me, $state) {
+    .factory('Rooms', function(ChatEngine, Me, $state) {
 
         let channels = ['Main', 'Portal', 'Blocks', 'Content', 'Support', 'Open Source', 'Client Eng', 'Docs', 'Marketing', 'Ops', 'Foolery'];
 
@@ -138,17 +138,17 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                 let room = {
                     name: channel,
-                    chat: new OCF.Chat(channel),
+                    chat: new ChatEngine.Chat(channel),
                     isGroup: channels.indexOf(channel) > -1,
                     messages: [],
                     typingUsers: []
                 }
 
-                room.chat.plugin(OpenChatFramework.plugin['ocf-emoji']());
-                room.chat.plugin(OpenChatFramework.plugin['ocf-markdown']());
-                room.chat.plugin(OpenChatFramework.plugin['ocf-typing-indicator']());
-                room.chat.plugin(OpenChatFramework.plugin['ocf-unread-messages']());
-                room.chat.plugin(OpenChatFramework.plugin['ocf-desktop-notifications']({
+                room.chat.plugin(ChatEngineCore.plugin['chat-engine-emoji']());
+                room.chat.plugin(ChatEngineCore.plugin['chat-engine-markdown']());
+                room.chat.plugin(ChatEngineCore.plugin['chat-engine-typing-indicator']());
+                room.chat.plugin(ChatEngineCore.plugin['chat-engine-unread-messages']());
+                room.chat.plugin(ChatEngineCore.plugin['chat-engine-desktop-notifications']({
                     title: (event) => {
                         return 'New FlowTron Message In ' + room.name
                     },
@@ -254,9 +254,9 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         return obj;
 
     })
-    .controller('MainCtrl', function($scope, OCF, Me) {
+    .controller('MainCtrl', function($scope, ChatEngine, Me) {
     })
-    .controller('LoginCtrl', function($scope, lock, OCF, Me, $state) {
+    .controller('LoginCtrl', function($scope, lock, ChatEngine, Me, $state) {
 
         $scope.lock = lock;
         $scope.Me = Me;
@@ -266,7 +266,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         }
 
     })
-    .controller('OnlineUser', function($scope, OCF, Me, $state) {
+    .controller('OnlineUser', function($scope, ChatEngine, Me, $state) {
 
         $scope.invite = function(user, channel) {
 
@@ -279,10 +279,10 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         $scope.newChat = function(user) {
 
             // define a channel using the clicked user's username and this client's username
-            let chan = [OCF.globalChat.channel, Me.profile.state().user_id, user.state().user_id].sort().join(':')
+            let chan = [ChatEngine.globalChat.channel, Me.profile.state().user_id, user.state().user_id].sort().join(':')
 
             // create a new chat with that channel
-            let newChat = new OCF.Chat(chan);
+            let newChat = new ChatEngine.Chat(chan);
 
             $scope.invite(user, chan);
 
@@ -291,7 +291,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         };
 
     })
-    .controller('ChatAppController', function($scope, $state, $stateParams, OCF, Me, Rooms) {
+    .controller('ChatAppController', function($scope, $state, $stateParams, ChatEngine, Me, Rooms) {
 
         Rooms.connect();
 
@@ -304,7 +304,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         $scope.Me = Me;
 
         // bind chat to updates
-        $scope.chat = OCF.globalChat;
+        $scope.chat = ChatEngine.globalChat;
 
         // when I get a private invite
         Me.profile.direct.on('private-invite', (payload) => {
@@ -314,7 +314,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
         });
 
-        OCF.globalChat.plugin(OpenChatFramework.plugin['ocf-online-user-search']({
+        ChatEngine.globalChat.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({
             field: 'name'
         }));
 
@@ -324,7 +324,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
             fire: () => {
 
                 // get a list of our matching users
-                let found = OCF.globalChat.onlineUserSearch.search($scope.userSearch.input);
+                let found = ChatEngine.globalChat.onlineUserSearch.search($scope.userSearch.input);
 
                 // hide every user
                 for(let uuid in $scope.chat.users) {
@@ -340,7 +340,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         };
 
     })
-    .controller('Chat', function($scope, $stateParams, OCF, Me, $timeout, Rooms) {
+    .controller('Chat', function($scope, $stateParams, ChatEngine, Me, $timeout, Rooms) {
 
         $scope.room = Rooms.findOrCreate($stateParams.channel);
 

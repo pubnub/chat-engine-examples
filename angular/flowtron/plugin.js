@@ -1,10 +1,10 @@
 angular.module('open-chat-framework', [])
-.service('ngOCF', ['$timeout', function($timeout) {
+.service('ngChatEngine', ['$timeout', function($timeout) {
 
-    this.bind = function(OCF) {
+    this.bind = function(ChatEngine) {
 
         // updates angular when anything changes
-        OCF.onAny(function(event, payload) {
+        ChatEngine.onAny(function(event, payload) {
             $timeout(function() {});
         });
 
