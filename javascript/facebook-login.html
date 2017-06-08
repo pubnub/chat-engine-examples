@@ -53,7 +53,7 @@
 
     <script type="text/javascript">
 
-        const OCF = ChatEngineCore.create({
+        const ChatEngine = ChatEngineCore.create({
             publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
             subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
         }, 'chat-engine-demo-facebook');
@@ -80,7 +80,7 @@
 
                     FB.api('/me', function(response) {
 
-                        var me = OCF.connect(response.id, response);
+                        var me = ChatEngine.connect(response.id, response);
 
                         FB.api(
                             "/" + response.id + "/picture",
@@ -103,7 +103,7 @@
 
                         $('#submit').click(() => {
 
-                            OCF.globalChat.emit('message', {
+                            ChatEngine.globalChat.emit('message', {
                                 text: $('#message').val()
                             });
 
@@ -111,7 +111,7 @@
 
                         });
 
-                        OCF.globalChat.on('message', (payload) => {
+                        ChatEngine.globalChat.on('message', (payload) => {
 
                             $('#chat').append($('<p><img src="' + payload.sender.state().avatar + '" style="border-radius: 50%; width: 20px; height: 20px; display: inline-block;"/> <strong>' + payload.sender.state().name + ':</strong> ' + payload.data.text + '</p>'));
 
