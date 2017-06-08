@@ -315,7 +315,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         });
 
         ChatEngine.globalChat.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({
-            field: 'name'
+            prop: 'name'
         }));
 
         // hide / show usernames based on input
