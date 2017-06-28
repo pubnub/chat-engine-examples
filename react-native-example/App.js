@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppRegistry, Button, Text, TextInput, View, FlatList } from 'react-native';
+import { AppRegistry, Button, Text, TextInput, View, FlatList, ListView } from 'react-native';
 import ChatEngineCore from 'chat-engine'
 
 const now = new Date().getTime();
@@ -54,15 +54,17 @@ export default class PizzaTranslator extends Component {
 
     ChatEngine.globalChat.on('message', (payload) => {
 
-      console.log('message!', payload)
+      console.log('message!')
 
-        let messages = this.state.messages;
+      this.state.messages.push(payload);
 
-        messages.push(payload);
+      // let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-        this.setState({
-            messages: messages
-        });
+      console.log(this.state.messages.length)
+      // 
+      // this.setState({
+      //   messages: ds.cloneWithRows(this.state.messages),
+      // });
 
     });
 
@@ -72,14 +74,27 @@ export default class PizzaTranslator extends Component {
 
     return (
       <View style={{padding: 10}}>
+      <FlatList
+        data={[
+          {key: 'Devin'},
+          {key: 'Jackson'},
+          {key: 'James'},
+          {key: 'Joel'},
+          {key: 'John'},
+          {key: 'Jillian'},
+          {key: 'Jimmy'},
+          {key: 'Julie'},
+        ]}
+        renderItem={({item}) => <Text>{item.key}</Text>}
+      />
         <FlatList
           data={this.state.messages}
-          renderItem={({item}) => <Text>{item.sender.uuid} {item.sender.text}</Text>}
+          renderItem={(item) => <Text>{item.sender.uuid} {item.sender.text}</Text>}
         />
        <TextInput
          style={{height: 40}}
          placeholder="Enter Chat Message Here!"
-         onChangeText={(text) => this.setChatInput({text})}
+         onChangeText={(text) => this.setChatInput(text)}
          value={this.state.chatInput}
        />
        <Button
