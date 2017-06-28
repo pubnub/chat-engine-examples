@@ -25,6 +25,9 @@ export default class PizzaTranslator extends Component {
         chatInput: ''
     };
 
+    console.log('run')
+    console.log(this.state)
+
   }
 
   setChatInput (value) {
@@ -32,6 +35,8 @@ export default class PizzaTranslator extends Component {
   }
 
   sendChat () {
+
+    console.log(this.state.chatInput)
 
     if(this.state.chatInput) {
 
@@ -48,6 +53,8 @@ export default class PizzaTranslator extends Component {
   componentDidMount () {
 
     ChatEngine.globalChat.on('message', (payload) => {
+
+      console.log('message!', payload)
 
         let messages = this.state.messages;
 
@@ -73,9 +80,10 @@ export default class PizzaTranslator extends Component {
          style={{height: 40}}
          placeholder="Enter Chat Message Here!"
          onChangeText={(text) => this.setChatInput({text})}
+         value={this.state.chatInput}
        />
        <Button
-          onPress={this.sendChat}
+          onPress={() => {this.sendChat()}}
           title="Send"
           color="#841584"
           accessibilityLabel="Learn more about this purple button"
