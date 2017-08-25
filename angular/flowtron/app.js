@@ -31,8 +31,6 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
             localStorage.setItem('access_token', authResult.accessToken);
             localStorage.setItem('id_token', authResult.idToken);
 
-            $state.go('dash')
-
         });
 
         ChatEngine.on('$.ready', (data) => {
@@ -62,7 +60,6 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
         if(profile) {
             profile = JSON.parse(profile);
-            ChatEngine.connect(profile.user_id, profile, localStorage.getItem('access_token'));
         }
 
         // bind open chat framework angular plugin
@@ -90,25 +87,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                 templateUrl: 'views/dash.html',
                 controller: 'ChatAppController',
                 resolve: {
-                    ready: function($q, ChatEngine) {
-
-                        var deferred = $q.defer();
-
-                        if(ChatEngine.ready) {
-                            console.log('ready')
-                            deferred.resolve();
-                        } else {
-                            ChatEngine.on('$.ready', function () {
-                                console.log('ready')
-                                deferred.resolve();
-                            });
-                        }
-
-                        return deferred.promise;
-
-
-                    },
-                    loggedIn: function($timeout, $state, $q, lock) {
+                    loggedIn: function($timeout, $state, $q, lock, ChatEngine) {
 
                         var deferred = $q.defer();
 
@@ -117,8 +96,21 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                             if (error || !profile) {
                                 return $state.go('login');
                             } else {
-                                deferred.resolve();
+
+
                                 localStorage.setItem('profile', JSON.stringify(profile));
+
+                                ChatEngine.connect(profile.user_id, profile, localStorage.getItem('access_token'));
+
+                                if(ChatEngine.ready) {
+                                    console.log('ready')
+                                    deferred.resolve();
+                                } else {
+                                    ChatEngine.on('$.ready', function () {
+                                        console.log('ready')
+                                        deferred.resolve();
+                                    });
+                                }
                             }
 
                         });
