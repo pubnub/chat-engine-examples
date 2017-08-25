@@ -15,7 +15,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         });
 
     })
-    .run(function($rootScope, lock, Me, ChatEngine, $state) {
+    .run(function($rootScope, lock, Me, ChatEngine, $state, $timeout) {
 
         // For use with UI Router
         lock.interceptHash();
@@ -23,9 +23,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         let profile = localStorage.getItem('profile');
 
         if(profile && profile.length) {
-
             profile = JSON.parse(profile);
-
         }
 
         lock.on('authenticated', function(authResult) {
@@ -33,22 +31,13 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
             localStorage.setItem('access_token', authResult.accessToken);
             localStorage.setItem('id_token', authResult.idToken);
 
-            lock.getProfile(authResult.idToken, function(error, profile) {
+            $state.go('dash')
 
-                if (error) {
-                    console.log(error);
-                }
-
-                localStorage.setItem('profile', JSON.stringify(profile));
-
-                $state.go('dash')
-
-            });
         });
 
         ChatEngine.on('$.ready', (data) => {
             Me.profile = data.me;
-        })
+        });
 
     })
     .factory('Me', function() {
@@ -79,16 +68,16 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         // bind open chat framework angular plugin
         ngChatEngine.bind(ChatEngine);
 
-        ChatEngine.onAny((event, data) => {
-            // console.log(event, data);
-        });
+        // ChatEngine.onAny((event, data) => {
+        //     console.log(event, data);
+        // });
 
         return ChatEngine;
 
     })
     .config(function($stateProvider, $urlRouterProvider) {
 
-        $urlRouterProvider.otherwise('/login');
+        $urlRouterProvider.otherwise('/dash');
 
         $stateProvider
             .state('login', {
@@ -106,12 +95,33 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                         var deferred = $q.defer();
 
                         if(ChatEngine.ready) {
+                            console.log('ready')
                             deferred.resolve();
                         } else {
                             ChatEngine.on('$.ready', function () {
+                                console.log('ready')
                                 deferred.resolve();
                             });
                         }
+
+                        return deferred.promise;
+
+
+                    },
+                    loggedIn: function($timeout, $state, $q, lock) {
+
+                        var deferred = $q.defer();
+
+                        lock.getProfile(localStorage.getItem('id_token'), function(error, profile) {
+
+                            if (error || !profile) {
+                                return $state.go('login');
+                            } else {
+                                deferred.resolve();
+                                localStorage.setItem('profile', JSON.stringify(profile));
+                            }
+
+                        });
 
                         return deferred.promise;
                     }
@@ -286,9 +296,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         $scope.lock = lock;
         $scope.Me = Me;
 
-        if(Me.profile) {
-            return $state.go('dash');
-        }
+        $scope.lock.show();
 
     })
     .controller('OnlineUser', function($scope, ChatEngine, Me, $state) {
@@ -319,10 +327,6 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         Rooms.connect();
 
         $scope.rooms = Rooms.list;
-
-        if(!Me.profile) {
-            return  $state.go('login');
-        }
 
         $scope.Me = Me;
 

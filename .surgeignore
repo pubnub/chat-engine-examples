@@ -3,4 +3,5 @@ node_modules/*
 !node_modules/chat-engine-*
 react/node_modules
 react-native/node_modules
-!bower_components/
+!bower_components
+!angular/flowtron/bower_components/
