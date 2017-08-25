@@ -8,7 +8,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
         lockProvider.init({
           clientID: 'BiY_C0X0jFeVZ8KlxFqMKwT1xrn96xTM',
-          domain: 'pubnub-chat-engine.auth0.com',
+          domain: 'pubnub-ocf.auth0.com',
             options: {
               _idTokenVerification: false
             }
@@ -25,12 +25,12 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         if(profile && profile.length) {
 
             profile = JSON.parse(profile);
-            Me.profile = ChatEngine.connect(profile.user_id, profile);
 
         }
 
         lock.on('authenticated', function(authResult) {
 
+            localStorage.setItem('access_token', authResult.accessToken);
             localStorage.setItem('id_token', authResult.idToken);
 
             lock.getProfile(authResult.idToken, function(error, profile) {
@@ -41,13 +41,14 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                 localStorage.setItem('profile', JSON.stringify(profile));
 
-                // connect to ChatEngine
-                Me.profile = ChatEngine.connect(profile.user_id, profile);
-
                 $state.go('dash')
 
             });
         });
+
+        ChatEngine.on('$.ready', (data) => {
+            Me.profile = data.me;
+        })
 
     })
     .factory('Me', function() {
@@ -60,10 +61,20 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
     .factory('ChatEngine', function(ngChatEngine) {
 
         // ChatEngine Configure
-        let ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
-            subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
-        }, 'chat-engine-demo-flowtron');
+        const ChatEngine = ChatEngineCore.create({
+            publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
+            subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
+        }, {
+            globalChannel: 'chat-engine-flowtron',
+            insecure: true
+        });
+
+        let profile = localStorage.getItem('profile');
+
+        if(profile) {
+            profile = JSON.parse(profile);
+            ChatEngine.connect(profile.user_id, profile, localStorage.getItem('access_token'));
+        }
 
         // bind open chat framework angular plugin
         ngChatEngine.bind(ChatEngine);
@@ -88,7 +99,23 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
             .state('dash', {
                 url: '/dash',
                 templateUrl: 'views/dash.html',
-                controller: 'ChatAppController'
+                controller: 'ChatAppController',
+                resolve: {
+                    ready: function($q, ChatEngine) {
+
+                        var deferred = $q.defer();
+
+                        if(ChatEngine.ready) {
+                            deferred.resolve();
+                        } else {
+                            ChatEngine.on('$.ready', function () {
+                                deferred.resolve();
+                            });
+                        }
+
+                        return deferred.promise;
+                    }
+                }
             })
             .state('dash.chat', {
                 url: '/:channel',
@@ -138,7 +165,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                 let room = {
                     name: channel,
-                    chat: new ChatEngine.Chat(channel),
+                    chat: new ChatEngine.Chat(channel, false),
                     isGroup: channels.indexOf(channel) > -1,
                     messages: [],
                     typingUsers: []
@@ -175,8 +202,6 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                     // if this message was sent by this client
                     payload.isSelf = payload.sender.uuid == Me.profile.uuid;
 
-                    console.log('added as ', payload)
-
                     if(!payload.isSelf && payload.type == 'message' || payload.type == 'history') {
                         sounds.broadcast.play();
                     }
@@ -186,10 +211,10 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                 }
 
-                room.chat.on('$history.message', function(payload) {
+                room.chat.on('$.history.message', function(payload) {
 
                     // render it in the DOM with a special class
-                    addMessage(payload, '$history.message');
+                    addMessage(payload, '$.history.message');
 
                 });
                 room.chat.history('message');
@@ -200,7 +225,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                     addMessage(payload, 'message');
                 });
 
-                room.chat.on('$history.upload', function(payload) {
+                room.chat.on('$.history.upload', function(payload) {
 
                     // render it in the DOM with a special class
                     addMessage(payload, 'upload');
@@ -268,25 +293,23 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
     })
     .controller('OnlineUser', function($scope, ChatEngine, Me, $state) {
 
-        $scope.invite = function(user, channel) {
-
-            // send the clicked user a private message telling them we invited them
-            user.direct.emit('private-invite', {channel: channel});
-
-        }
-
         // create a new chat
         $scope.newChat = function(user) {
 
             // define a channel using the clicked user's username and this client's username
-            let chan = [ChatEngine.globalChat.channel, Me.profile.state().user_id, user.state().user_id].sort().join(':')
+            let chan = [Me.profile.state().user_id, user.state().user_id].sort().join('#')
 
             // create a new chat with that channel
             let newChat = new ChatEngine.Chat(chan);
 
-            $scope.invite(user, chan);
+            newChat.on('$.connected', () => {
 
-            $state.go('dash.chat', {channel: chan})
+                // this fires a private invite to the user
+                newChat.invite(user);
+
+                $state.go('dash.chat', {channel: newChat.channel})
+
+            });
 
         };
 
@@ -304,17 +327,17 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         $scope.Me = Me;
 
         // bind chat to updates
-        $scope.chat = ChatEngine.globalChat;
+        $scope.chat = ChatEngine.global;
 
         // when I get a private invite
-        Me.profile.direct.on('private-invite', (payload) => {
+        Me.profile.direct.on('$.invite', (payload) => {
 
             // create a new chat and render it in DOM
             $state.go('dash.chat', {channel: payload.data.channel});
 
         });
 
-        ChatEngine.globalChat.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({
+        ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({
             prop: 'name'
         }));
 
@@ -324,7 +347,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
             fire: () => {
 
                 // get a list of our matching users
-                let found = ChatEngine.globalChat.onlineUserSearch.search($scope.userSearch.input);
+                let found = ChatEngine.global.onlineUserSearch.search($scope.userSearch.input);
 
                 // hide every user
                 for(let uuid in $scope.chat.users) {
@@ -352,7 +375,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
             $scope.scrollToBottom();
         });
 
-        $scope.chat.on('$history.*', () => {
+        $scope.chat.on('$.history.*', () => {
             $scope.scrollToBottom();
         });
 

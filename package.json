@@ -4,7 +4,7 @@
   "description": "Examples of OCF for a ton of frameworks",
   "main": "index.html",
   "dependencies": {
-    "chat-engine": "0.2.x",
+    "chat-engine": "^0.4.2",
     "chat-engine-desktop-notifications": "0.0.x",
     "chat-engine-emoji": "0.0.x",
     "chat-engine-markdown": "0.0.x",
@@ -12,12 +12,13 @@
     "chat-engine-random-username": "0.0.x",
     "chat-engine-typing-indicator": "0.0.x",
     "chat-engine-unread-messages": "0.0.x",
+    "node-libs-react-native": "^1.0.1",
     "react": "15.4.2",
     "react-dom": "15.4.2"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy": "surge --domain https://chat-engine-examples.surge.sh"
   },
   "author": "Ian Jennings"
 }

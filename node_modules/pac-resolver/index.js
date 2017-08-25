@@ -1,3 +1,4 @@
+'use strict';
 
 /**
  * Module dependencies.
@@ -5,9 +6,9 @@
 
 var co = require('co');
 var vm = require('vm');
+var parse = require('url').parse;
 var thunkify = require('thunkify');
 var degenerator = require('degenerator');
-var regenerator = require('regenerator');
 
 /**
  * Built-in PAC functions.
@@ -32,9 +33,6 @@ var weekdayRange = require('./weekdayRange');
 
 module.exports = generate;
 
-// cache the `facebook/regenerator` wrap function for the Generator object.
-var rg = vm.runInNewContext(regenerator.compile('', { includeRuntime: true }).code + ';regeneratorRuntime');
-
 /**
  * Returns an asyncronous `FindProxyForURL` function from the
  * given JS string (from a PAC file).
@@ -44,8 +42,9 @@ var rg = vm.runInNewContext(regenerator.compile('', { includeRuntime: true }).co
  * @return {Function} async resolver function
  */
 
-function generate (str, opts) {
+function generate (_str, opts) {
   var i;
+  var str = String(_str)
 
   // the sandbox to use for the vm
   var sandbox = {
@@ -82,18 +81,11 @@ function generate (str, opts) {
   }
   //console.log(names);
 
-  // for `facebook/regenerator`
-  sandbox.regeneratorRuntime = rg;
-
   // convert the JS FindProxyForURL function into a generator function
   var js = degenerator(str, names);
 
-  // use `facebook/regenerator` for node < v0.11 support
-  // TODO: don't use regenerator if native generators are supported...
-  js = regenerator.compile(js, { includeRuntime: false }).code;
-
   // filename of the pac file for the vm
-  var filename = opts && opts.filename ? opts.filename : 'proxy.pac';
+  var filename = (opts && opts.filename) || 'proxy.pac';
 
   // evaluate the JS string and extract the FindProxyForURL generator function
   var fn = vm.runInNewContext(js + ';FindProxyForURL', sandbox, filename);
@@ -102,9 +94,50 @@ function generate (str, opts) {
   }
 
   // return the async resolver function
-  var resolver = co(fn);
+  var resolver = co.wrap(fn);
 
-  return function FindProxyForURL (url, host, fn) {
-    resolver(url, host, fn);
+  return function FindProxyForURL (url, _host, _callback) {
+    let host
+    let callback
+    switch (arguments.length) {
+      case 3:
+        host = _host
+        callback = _callback
+        break;
+      case 2:
+        if (typeof _host === 'function') {
+          callback = _host
+        } else {
+          host = _host
+        }
+        break;
+    }
+
+    if (!host) {
+      host = parse(url).hostname;
+    }
+
+    const promise = resolver(url, host, callback);
+
+    if (typeof callback === 'function') {
+      toCallback(promise, callback)
+    } else {
+      return promise
+    }
   };
+}
+
+function toCallback (promise, callback) {
+  let called = false
+  function resolve(rtn) {
+    if (called) return
+    called = true
+    callback(null, rtn)
+  }
+  function reject(err) {
+    if (called) return
+    called = true
+    callback(err)
+  }
+  promise.then(resolve, reject)
 }

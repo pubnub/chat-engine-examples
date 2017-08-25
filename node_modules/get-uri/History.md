@@ -1,4 +1,23 @@
 
+2.0.1 / 2017-07-11
+==================
+
+  * update dependencies
+  * fix "ftpd" causing the tests to fail
+  * drop old Node.js versions, test 6, 7 and 8
+  * ftp: add "error" event listener
+
+2.0.0 / 2016-01-20
+==================
+
+  * index: remove `.use()`
+
+1.1.1 / 2016-01-20
+==================
+
+  * index: deprecate `.use()`
+  * travis: test more node versions
+
 1.1.0 / 2015-07-08
 ==================
 

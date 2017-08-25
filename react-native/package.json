@@ -19,7 +19,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "chat-engine": "^0.2.1",
+    "chat-engine": "^0.3.2",
     "chat-engine-gravatar": "0.0.4",
     "expo": "^18.0.3",
     "react": "16.0.0-alpha.12",

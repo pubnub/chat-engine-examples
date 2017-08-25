@@ -1,3 +1,4 @@
+'use strict';
 
 /**
  * Module dependencies.
@@ -93,7 +94,7 @@ function ProxyAgent (opts) {
   // get the requested proxy "protocol"
   var protocol = opts.protocol;
   if (!protocol) {
-    throw new TypeError('You must specify a string "protocol" for the ' +
+    throw new TypeError('You must specify a "protocol" for the ' +
                         'proxy type (' + types().join(', ') + ')');
   }
 

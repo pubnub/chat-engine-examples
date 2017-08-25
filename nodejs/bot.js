@@ -1,62 +1,71 @@
 "use strict";
 
-let ChatEngineCore = require('chat-engine');
+let ChatEngineCore = require('../../chat-engine/src/index.js');
 let typingIndicator = require('chat-engine-typing-indicator');
 
 var ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
-    subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
-}, 'chat-engine-jquery-kitchen-sink');
+    publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
+    subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
+}, {
+    globalChannel: 'chat-engine-jquery-kitchen-sink',
+    insecure: true
+});
 
 ChatEngine.onAny((payload) => {
     console.log('any', payload)
 })
 
-var me = ChatEngine.connect('robot-stephen', {username: 'robot-stephen'});
+ChatEngine.connect('robot-stephen', { username: 'robot-stephen' }, 'auth-key');
 
 var chats = {};
 
-me.direct.on('private-invite', (payload) => {
+ChatEngine.on('$.ready', (data) => {
 
-    var chat = chats[payload.data.channel];
+    let me = data.me;
 
-    if(!chat) {
+    me.direct.on('$.invite', (payload) => {
 
-        chats[payload.data.channel] = new ChatEngine.Chat(payload.data.channel);
+        var chat = chats[payload.data.channel];
 
-        chat = chats[payload.data.channel];
+        if (!chat) {
 
-        chat.plugin(typingIndicator({
-            timeout: 5000
-        }));
+            chats[payload.data.channel] = new ChatEngine.Chat(payload.data.channel);
 
-        chat.emit('message', 'hey, how can I help you?');
+            chat = chats[payload.data.channel];
 
-        chat.on('message', (payload) => {
+            chat.plugin(typingIndicator({
+                timeout: 5000
+            }));
 
-            if(payload.sender.uuid !== me.uuid) { // add to github issues
+            chat.emit('message', 'hey, how can I help you?');
 
-                setTimeout((argument) => {
+            chat.on('message', (payload) => {
 
-                    chat.typingIndicator.startTyping();
+                if (payload.sender.uuid !== me.uuid) { // add to github issues
 
                     setTimeout((argument) => {
 
-                        console.log(payload.sender.state() )
-                        console.log(chat.users)
+                        chat.typingIndicator.startTyping();
 
-                        chat.emit('message', 'hey there ' + payload.sender.state().username);
+                        setTimeout((argument) => {
 
-                        chat.typingIndicator.stopTyping(); // add this to plugin middleware
+                            console.log(payload.sender.state())
+                            console.log(chat.users)
 
-                    }, 1000);
+                            chat.emit('message', 'hey there ' + payload.sender.state().username);
 
-                }, 500);
+                            chat.typingIndicator.stopTyping(); // add this to plugin middleware
 
-            }
+                        }, 1000);
 
-        });
+                    }, 500);
 
-    }
+                }
+
+            });
+
+        }
+
+    });
 
 });

@@ -1,3 +1,4 @@
+'use strict';
 
 /**
  * Module exports.
@@ -25,13 +26,12 @@ var tls = require('tls');
 var crypto = require('crypto');
 var parse = require('url').parse;
 var format = require('url').format;
-var extend = require('extend');
 var Agent = require('agent-base');
 var HttpProxyAgent = require('http-proxy-agent');
 var HttpsProxyAgent = require('https-proxy-agent');
 var SocksProxyAgent = require('socks-proxy-agent');
 var PacResolver = require('pac-resolver');
-var toBuffer = require('stream-to-buffer');
+var getRawBody = require('raw-body');
 var inherits = require('util').inherits;
 var debug = require('debug')('pac-proxy-agent');
 
@@ -78,7 +78,7 @@ function PacProxyAgent (uri, opts) {
   // strip the "pac+" prefix
   this.uri = uri.replace(/^pac\+/i, '');
 
-  this.sandbox = opts.sandox;
+  this.sandbox = opts.sandbox;
 
   this.proxy = opts;
 
@@ -158,13 +158,13 @@ PacProxyAgent.prototype.loadPacFile = function (fn) {
     if (err) return fn(err);
     debug('got stream.Readable instance for URI');
     self.cache = rs;
-    toBuffer(rs, onbuffer);
+    getRawBody(rs, 'utf8', onbuffer);
   }
 
   function onbuffer (err, buf) {
     if (err) return fn(err);
     debug('read %o byte PAC file from URI', buf.length);
-    fn(null, buf.toString('utf8'));
+    fn(null, buf);
   }
 };
 
@@ -197,7 +197,7 @@ function connect (req, opts, fn) {
       search = path.substring(firstQuestion);
       path = path.substring(0, firstQuestion);
     }
-    url = format(extend({}, opts, {
+    url = format(Object.assign({}, opts, {
       protocol: secure ? 'https:' : 'http:',
       pathname: path,
       search: search,
@@ -250,7 +250,7 @@ function connect (req, opts, fn) {
       // use an HTTP or HTTPS proxy
       // http://dev.chromium.org/developers/design-documents/secure-web-proxy
       var proxyURL = ('HTTPS' === type ? 'https' : 'http') + '://' + parts[1];
-      var proxy = extend({}, self.proxy, parse(proxyURL));
+      var proxy = Object.assign({}, self.proxy, parse(proxyURL));
       if (secure) {
         agent = new HttpsProxyAgent(proxy);
       } else {

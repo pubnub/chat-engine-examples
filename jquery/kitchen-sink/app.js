@@ -1,48 +1,34 @@
 let me;
 let ChatEngine;
 
-const setup = function() {
-
-    // ChatEngine Configure
-    ChatEngine = ChatEngineCore.create({
-        publishKey: 'pub-c-07824b7a-6637-4e6d-91b4-7f0505d3de3f',
-        subscribeKey: 'sub-c-43b48ad6-d453-11e6-bd29-0619f8945a4f'
-    }, 'chat-engine-jquery-kitchen-sink');
-
-    ChatEngine.onAny((event, data) => {
-        console.log(event, data);
-    });
-
-}
-
 const $chatTemplate = function(chat) {
 
     let html =
-        '<div class="chat col-xs-6" id="' + chat.channel + '">' +
-            '<div class="card">' +
-                '<div class="card-header">' +
-                    '<div class="col-sm-6">'  +
-                         chat.channel +
-                    '</div>' +
-                    '<div class="col-sm-6 text-right">' +
-                        '<a href="#" class="close">x</a>' +
-                    '</div>' +
-                '</div>' +
+        '<div class="chat col-xs-12" id="' + chat.channel + '">' +
+        '<div class="card">' +
+        '<div class="card-header">' +
+        '<div class="col-sm-6">' +
+        chat.channel +
+        '</div>' +
+        '<div class="col-sm-6 text-right">' +
+        '<a href="#" class="close">x</a>' +
+        '</div>' +
+        '</div>' +
 
-                '<ul class="online-list-sub list-group list-group-flush"></ul>' +
-                '<div class="card-block">' +
-                    '<div class="log"></div>' +
-                    '<p class="typing text-muted"></p>' +
-                    '<form class="send-message">' +
-                        '<div class="input-group">' +
-                            '<input type="text" class="form-control message" placeholder="Your Message...">' +
-                            '<span class="input-group-btn">' +
-                                '<button class="btn btn-primary" type="submit">Send</button>' +
-                            '</span>' +
-                        '</div>' +
-                    '</form>' +
-                '</div>' +
-            '</div>' +
+        '<ul class="online-list-sub list-group list-group-flush"></ul>' +
+        '<div class="card-block">' +
+        '<div class="log"></div>' +
+        '<p class="typing text-muted"></p>' +
+        '<form class="send-message">' +
+        '<div class="input-group">' +
+        '<input type="text" class="form-control message" placeholder="Your Message...">' +
+        '<span class="input-group-btn">' +
+        '<button class="btn btn-primary" type="submit">Send</button>' +
+        '</span>' +
+        '</div>' +
+        '</form>' +
+        '</div>' +
+        '</div>' +
         '</div>';
 
     // define a HTML template for the new chatroom
@@ -53,9 +39,9 @@ const $chatTemplate = function(chat) {
 const $messageTemplate = function(payload, classes) {
 
     let html =
-        '<div class="'+classes+'">' +
-            '<p class="text-muted username">' + payload.sender.state().username + '</p>' +
-            '<p>' + payload.data + '</p>' +
+        '<div class="' + classes + '">' +
+        '<p class="text-muted username">' + payload.sender.state().username + '</p>' +
+        '<p>' + payload.data + '</p>' +
         '</div>';
 
     return $(html);
@@ -68,8 +54,8 @@ const $userTemplate = function(user, chat) {
     // create the HTML template for the user
     let html =
         '<li class="' + user.uuid + ' list-group-item">' +
-            '<a href="#">' + state.username  + '</a> ' +
-            '<span class="show-typing">is typing...</span>' +
+        '<a href="#">' + state.username + '</a> ' +
+        '<span class="show-typing">is typing...</span>' +
         '</li>';
 
     return $(html);
@@ -79,13 +65,10 @@ const $userTemplate = function(user, chat) {
 // function to create concept of "me"
 const identifyMe = function() {
 
-    // create a user for myself and store as ```me```
-    me = ChatEngine.connect(new Date().getTime().toString());
-
-    me.plugin(ChatEngineCore.plugin['chat-engine-random-username'](ChatEngine.globalChat));
+    me.plugin(ChatEngineCore.plugin['chat-engine-random-username'](ChatEngine.global));
 
     // when I get a private invite
-    me.direct.on('private-invite', (payload) => {
+    me.direct.on('$.invite', (payload) => {
         // create a new chat and render it in DOM
         renderChat(new ChatEngine.Chat(payload.data.channel));
     });
@@ -100,25 +83,25 @@ const identifyMe = function() {
 // render a ChatEngine.User object in a list
 const renderUser = function($el, user, chat) {
 
-    // render user in this chat with their state from globalChat
-    let $tpl = $userTemplate(user, ChatEngine.globalChat);
+    // render user in this chat with their state from global
+    let $tpl = $userTemplate(user, ChatEngine.global);
 
     // listen for a click on the user
     $tpl.find('a').click(() => {
 
         // define a channel using the clicked user's username and this client's username
-        let chan = [user.uuid, me.uuid].sort().join(':');
+        let chan = [user.uuid, me.uuid].sort().join('#');
 
         // create a new chat with that channel
         let newChat = new ChatEngine.Chat(chan);
 
-        console.log(newChat, chan)
+        newChat.on('$.connected', () => {
 
-        // render the new chat on the dom
-        renderChat(newChat);
+            // this fires a private invite to the user
+            newChat.invite(user);
+            renderChat(newChat);
 
-        // send the clicked user a private message telling them we invited them
-        user.direct.emit('private-invite', {channel: newChat.channel});
+        });
 
     });
 
@@ -127,7 +110,7 @@ const renderUser = function($el, user, chat) {
 
     let $existingEl = $el.find('.' + user.uuid);
 
-    if($existingEl.length) {
+    if ($existingEl.length) {
         $existingEl.replaceWith($tpl);
     } else {
 
@@ -141,30 +124,22 @@ const renderUser = function($el, user, chat) {
 // turn ChatEngine.Chat into an online list
 const renderOnlineList = function($el, chat) {
 
-    for(var key in chat.users) {
+    for (var key in chat.users) {
         renderUser($el, chat.users[key], chat);
     }
 
     // when someone joins the chat
-    chat.on('$.online', (payload) => {
+    chat.on('$.online.*', (payload) => {
         // render the user in the online list and bind events
         renderUser($el, payload.user, chat);
     });
 
-    // when someone joins the chat
-    chat.on('$.online', (payload) => {
-        // render the user in the online list and bind events
-        renderUser($el, payload.user, chat);
-    });
-
-    chat.on('$.disconnect', (payload) => {
-        renderUser($el, payload.user, chat);
-    });
-
-    // when someone leaves the chat
-    chat.on('$.leave', (payload) => {
-        // remove the user from the online list
+    chat.on('$.offline.*', (payload) => {
         $('.' + payload.user.uuid).remove();
+    });
+
+    chat.on('$.state', (payload) => {
+        renderUser($el, payload.user, chat);
     });
 
     chat.plugin(ChatEngineCore.plugin['chat-engine-typing-indicator']({
@@ -185,7 +160,7 @@ const renderChat = function(privateChat) {
     $tpl.find('.message').keypress((e) => {
 
         // if that keypress was not "Enter"
-        if(e.which != 13) {
+        if (e.which != 13) {
 
             // then tell ChatEngine this user is typing
             privateChat.typingIndicator.startTyping();
@@ -219,13 +194,13 @@ const renderChat = function(privateChat) {
         classes = classes || '';
 
         // if I didn't send this message
-        if(payload.sender.constructor.name !== "Me") {
+        if (payload.sender.constructor.name !== "Me") {
             // render it on the right
             classes += ' text-xs-right'
         }
 
         // if the uuid of the user who sent this message is the same as the last
-        if(lastSender == payload.sender.uuid) {
+        if (lastSender == payload.sender.uuid) {
             // don't render the username again
             classes += ' hide-username';
         }
@@ -245,7 +220,10 @@ const renderChat = function(privateChat) {
     });
 
     // if this chat receives a message that's not from this sessions
-    privateChat.on('$history.message', function(payload) {
+    privateChat.on('$.history.message', function(payload) {
+
+        console.log(payload)
+
         // render it in the DOM with a special class
         renderMessage(payload, 'text-muted');
     });
@@ -288,7 +266,7 @@ const renderChat = function(privateChat) {
 // bind the input from the search bar to the usernameSearch plugin
 const bindUsernamePlugin = function() {
 
-    ChatEngine.globalChat.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']());
+    ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']());
 
     // when someone types in the username search
     $('#usernameSearch').on('change keyup paste click blur', () => {
@@ -297,11 +275,11 @@ const bindUsernamePlugin = function() {
         let val = $('#usernameSearch').val();
 
         // if the value is set
-        if(val) {
+        if (val) {
 
             // call the plugin function to find out if that search query
             // matches anyone's username
-            let online = ChatEngine.globalChat.onlineUserSearch.search(val);
+            let online = ChatEngine.global.onlineUserSearch.search(val);
 
             // hide all the users
             $('#online-list').find('.list-group-item').hide();
@@ -323,15 +301,30 @@ const bindUsernamePlugin = function() {
 
 }
 
-// setup the ChatEngine framework
-setup();
+// ChatEngine Configure
+ChatEngine = ChatEngineCore.create({
+    publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
+    subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
+}, {
+    globalChannel: 'chat-engine-jquery-kitchen-sink',
+    insecure: true
+});
 
-// set up the concept of me and globalChat
-identifyMe();
+// create a user for myself and store as ```me```
+ChatEngine.connect(new Date().getTime().toString(), {}, 'auth-key');
 
-// render the ChatEngine.globalChat now that it's defined
-// this onlineList can spawn other chats
-renderOnlineList($('#online-list'), ChatEngine.globalChat);
+ChatEngine.on('$.ready', (data) => {
 
-// plug the search bar into the username plugin
-bindUsernamePlugin();
+    me = data.me;
+
+    // set up the concept of me and global
+    identifyMe();
+
+    // render the ChatEngine.global now that it's defined
+    // this onlineList can spawn other chats
+    renderOnlineList($('#online-list'), ChatEngine.global);
+
+    // plug the search bar into the username plugin
+    bindUsernamePlugin();
+
+});
