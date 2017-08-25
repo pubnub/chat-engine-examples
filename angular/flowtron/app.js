@@ -56,25 +56,15 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
             insecure: true
         });
 
-        let profile = localStorage.getItem('profile');
-
-        if(profile) {
-            profile = JSON.parse(profile);
-        }
-
         // bind open chat framework angular plugin
         ngChatEngine.bind(ChatEngine);
-
-        // ChatEngine.onAny((event, data) => {
-        //     console.log(event, data);
-        // });
 
         return ChatEngine;
 
     })
     .config(function($stateProvider, $urlRouterProvider) {
 
-        $urlRouterProvider.otherwise('/dash');
+        $urlRouterProvider.otherwise('/dash/chat-engine-flowtron%23chat%23public.%23Main');
 
         $stateProvider
             .state('login', {
@@ -87,7 +77,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                 templateUrl: 'views/dash.html',
                 controller: 'ChatAppController',
                 resolve: {
-                    loggedIn: function($timeout, $state, $q, lock, ChatEngine) {
+                    ready: function($timeout, $state, $q, lock, ChatEngine) {
 
                         var deferred = $q.defer();
 
@@ -96,7 +86,6 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                             if (error || !profile) {
                                 return $state.go('login');
                             } else {
-
 
                                 localStorage.setItem('profile', JSON.stringify(profile));
 
