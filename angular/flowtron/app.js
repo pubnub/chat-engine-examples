@@ -52,8 +52,8 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
             publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
             subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
         }, {
-            globalChannel: 'chat-engine-flowtron',
-            endpoint: 'http://localhost:3000/insecure'
+            endpoint: 'http://localhost:3000/insecure',
+            globalChannel: 'chat-engine-flowtron'
         });
 
         // bind open chat framework angular plugin

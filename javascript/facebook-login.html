@@ -19,14 +19,14 @@
 
 <body>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="../node_modules/chat-engine/dist/latest/chat-engine.js" type="text/javascript"></script>
+    <script src="../../chat-engine/dist/latest/chat-engine.js" type="text/javascript"></script>
     <script type="text/javascript">
     const ChatEngine = ChatEngineCore.create({
-        publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
-        subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
+        publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+        subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
     }, {
-        globalChannel: 'chat-engine-demo-facebook' + new Date().getTime(),
-        insecure: true
+        endpoint: 'http://localhost:3000/insecure',
+        globalChannel: 'chat-engine-demo-facebook' + new Date().getTime()
     });
 
     ChatEngine.onAny((event, data) => {

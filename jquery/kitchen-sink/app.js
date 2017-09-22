@@ -326,7 +326,7 @@ ChatEngine = ChatEngineCore.create({
     subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe',
 }, {
     globalChannel: 'chat-engine-jquery-kitchen-sink',
-    authUrl: 'http://localhost:3000/insecure'
+    endpoint: 'http://localhost:3000/insecure'
 });
 
 let username = window.location.hash.substr(1);
