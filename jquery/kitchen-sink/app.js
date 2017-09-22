@@ -38,8 +38,6 @@ const $chatTemplate = function(chat) {
 
 const $messageTemplate = function(payload, classes) {
 
-    console.log(payload.sender)
-
     let html =
         '<div class="' + classes + '">' +
         '<p class="text-muted username">' + payload.sender.state.username + '</p>' +
@@ -53,6 +51,7 @@ const $userTemplate = function(user, chat) {
 
     // create the HTML template 9 the user
     let html =
+
         '<li class="' + user.uuid + ' list-group-item">' +
         '<a href="">' + user.state.username + '</a> ' +
         '<span class="show-typing">is typing...</span>' +
@@ -77,8 +76,6 @@ const identifyMe = function(username) {
         renderChat(new ChatEngine.Chat(payload.data.channel));
     });
 
-    console.log(me)
-
     // render the value of me in the GUI
     $('#me').text(me.state.username + ' with uuid: ' + me.uuid);
 
@@ -87,7 +84,7 @@ const identifyMe = function(username) {
 // GUI render functions
 
 // render a ChatEngine.User object in a list
-const renderUser = function($el, user, chat) {
+const renderUser = function($el, user) {
 
     // render user in this chat with their state from global
     let $tpl = $userTemplate(user, ChatEngine.global);
@@ -100,8 +97,6 @@ const renderUser = function($el, user, chat) {
 
         // create a new chat with that channel
         let newChat = new ChatEngine.Chat(chan);
-
-        console.log('listening for connection')
         newChat.on('$.connected', () => {
 
             // this fires a private invite to the user
@@ -117,44 +112,46 @@ const renderUser = function($el, user, chat) {
     // hide "is typingIndicator..." by defualt
     $tpl.find('.show-typing').hide();
 
-    let $existingEl = $el.find('.' + user.uuid);
-
-    if ($existingEl.length) {
-        $existingEl.replaceWith($tpl);
-    } else {
-
-        // append the user element to the input element on dom
-        $el.append($tpl);
-
-    }
+    return $tpl;
 
 };
+
+const updateUser = function(user) {
+
+    let $el = $('body').find('.' + user.uuid);
+    $el.replaceWith(renderUser($el, user));
+
+}
+
+const userExists = function($el, user) {
+    return $el.find('.' + user.uuid).length > 0;
+}
 
 // turn ChatEngine.Chat into an online list
 const renderOnlineList = function($el, chat) {
 
     let userId = null;
     for(userId in chat.users) {
-        renderUser($el, chat.users[userId], chat);
+
+        if(!userExists($el, chat.users[userId])) {
+            $el.append(renderUser($el, chat.users[userId]))
+        }
+
     }
 
     // when someone joins the chat
     chat.on('$.online.*', (payload) => {
 
-        // render the user in the online list and bind events
-        renderUser($el, payload.user, chat);
+        if(!userExists($el, payload.user)) {
+            // render the user in the online list and bind events
+            $el.append(renderUser($el, payload.user));
+        }
     });
 
     chat.on('$.offline.*', (payload) => {
-
-        console.log('offline', payload, payload.user.uuid)
-
         $el.find('.' + payload.user.uuid).remove();
     });
 
-    chat.on('$.state', (payload) => {
-        renderUser($el, payload.user, chat);
-    });
 
     chat.plugin(ChatEngineCore.plugin['chat-engine-typing-indicator']({
         timeout: 1000
@@ -204,9 +201,6 @@ const renderChat = function(privateChat) {
     // render a new message in the dom
     let renderMessage = (payload, classes) => {
 
-        console.log('message payload', payload)
-        console.log(payload.sender.state)
-
         // a list of extra classes for the message div
         classes = classes || '';
 
@@ -238,8 +232,6 @@ const renderChat = function(privateChat) {
 
     // if this chat receives a message that's not from this sessions
     privateChat.on('$.history.message', function(payload) {
-
-        console.log(payload)
 
         // render it in the DOM with a special class
         renderMessage(payload, 'text-muted');
@@ -336,7 +328,7 @@ ChatEngine.connect(username || new Date().getTime().toString(), {}, 'auth-key');
 
 ChatEngine.onAny((event, payload) => {
 
-    // console.info(event)
+    console.info(event, payload)
 
 });
 
@@ -356,15 +348,10 @@ ChatEngine.on('$.session.chat.join', (data) => {
 });
 ChatEngine.on('$.session.chat.leave', (data) => {
 
-
-    console.log('data chat', data)
-
     $('#' + data.chat.channel.replace(/[^a-zA-Z 0-9]+/g, '')).remove();
 });
 
 ChatEngine.on('$.ready', (data) => {
-
-    console.log(data)
 
     me = data.me;
 
@@ -378,4 +365,8 @@ ChatEngine.on('$.ready', (data) => {
     // plug the search bar into the username plugin
     bindUsernamePlugin();
 
+});
+
+ChatEngine.on('$.state', (payload) => {
+    updateUser(payload.user);
 });
