@@ -7,11 +7,11 @@ const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
-    subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
+    publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+    subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
 }, {
-    globalChannel: 'chat-engine-react-native',
-    insecure: true
+    endpoint: 'http://localhost:3000/insecure',
+    globalChannel: 'chat-engine-react-native'
 });
 
 export default class PizzaTranslator extends Component {
@@ -66,7 +66,7 @@ export default class PizzaTranslator extends Component {
 
                 console.log(payload)
 
-                console.log('gravatar', 'https:' + payload.sender.state().gravatar)
+                console.log('gravatar', 'https:' + payload.sender.state.gravatar)
 
                 this.messages.push(payload);
 
@@ -82,32 +82,29 @@ export default class PizzaTranslator extends Component {
 
     render() {
 
-        return ( <
-            View style = { { padding: 10 } } >
-            <
-            ListView dataSource = { this.state.dataSource } renderRow = {
-                (rowData) => < View > < Image style = { { width: 100, height: 100 } } source = { { uri: 'https:' + rowData.sender.state().gravatar, cache: 'reload' } }
-                /><Text>{rowData.sender.uuid}: {rowData.data.text}</Text > < /View>} /
-                >
-                <
-                TextInput
+        return (
+            <View style = { { padding: 10 } } >
+            <ListView dataSource = { this.state.dataSource } renderRow = {
+                (rowData) =>
+                    <View>
+                        <Image style ={{ width: 100, height: 100 }} source = {{ uri: 'https:' + rowData.sender.state.gravatar, cache: 'reload' }}/>
+                        <Text>{rowData.sender.uuid}: {rowData.data.text}</Text >
+                    </View>
+                } />
+            <TextInput
                 style = { { height: 40 } }
                 placeholder = "Enter Chat Message Here!"
                 onChangeText = {
                     (text) => this.setChatInput(text) }
                 value = { this.state.chatInput }
-                /> <
-                Button
+            />
+            <Button
                 onPress = {
                     () => { this.sendChat() } }
                 title = "Send"
                 color = "#841584"
-                accessibilityLabel = "Learn more about this purple button" /
-                >
-                <
-                /View>
-            )
-
+            />
+        </View>)
 
         }
 
