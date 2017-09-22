@@ -42,7 +42,7 @@ const $messageTemplate = function(payload, classes) {
 
     let html =
         '<div class="' + classes + '">' +
-        '<p class="text-muted username">' + payload.sender.state().username + '</p>' +
+        '<p class="text-muted username">' + payload.sender.state.username + '</p>' +
         '<p>' + payload.data + '</p>' +
         '</div>';
 
@@ -51,12 +51,10 @@ const $messageTemplate = function(payload, classes) {
 
 const $userTemplate = function(user, chat) {
 
-    let state = user.state(chat);
-
     // create the HTML template 9 the user
     let html =
         '<li class="' + user.uuid + ' list-group-item">' +
-        '<a href="">' + state.username + '</a> ' +
+        '<a href="">' + user.state.username + '</a> ' +
         '<span class="show-typing">is typing...</span>' +
         '</li>';
 
@@ -79,8 +77,10 @@ const identifyMe = function(username) {
         renderChat(new ChatEngine.Chat(payload.data.channel));
     });
 
+    console.log(me)
+
     // render the value of me in the GUI
-    $('#me').text(me.state().username + ' with uuid: ' + me.uuid);
+    $('#me').text(me.state.username + ' with uuid: ' + me.uuid);
 
 }
 
@@ -100,10 +100,6 @@ const renderUser = function($el, user, chat) {
 
         // create a new chat with that channel
         let newChat = new ChatEngine.Chat(chan);
-
-        newChat.onAny((event, payload) => {
-            console.log(newChat.channel, event, payload)
-        });
 
         console.log('listening for connection')
         newChat.on('$.connected', () => {
@@ -137,8 +133,14 @@ const renderUser = function($el, user, chat) {
 // turn ChatEngine.Chat into an online list
 const renderOnlineList = function($el, chat) {
 
+    let userId = null;
+    for(userId in chat.users) {
+        renderUser($el, chat.users[userId], chat);
+    }
+
     // when someone joins the chat
     chat.on('$.online.*', (payload) => {
+
         // render the user in the online list and bind events
         renderUser($el, payload.user, chat);
     });
@@ -202,6 +204,9 @@ const renderChat = function(privateChat) {
     // render a new message in the dom
     let renderMessage = (payload, classes) => {
 
+        console.log('message payload', payload)
+        console.log(payload.sender.state)
+
         // a list of extra classes for the message div
         classes = classes || '';
 
@@ -245,7 +250,7 @@ const renderChat = function(privateChat) {
     privateChat.on('$typingIndicator.startTyping', (payload) => {
 
         // write some text saying that user is typing
-        $tpl.find('.typing').text(payload.sender.state().username + ' is typing...');
+        $tpl.find('.typing').text(payload.sender.state.username + ' is typing...');
 
         // and show their typing indication next to their name in any other location
         $tpl.find('.' + payload.sender.uuid).find('.show-typing').show();
@@ -320,7 +325,7 @@ ChatEngine = ChatEngineCore.create({
     publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
     subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe',
 }, {
-    globalChannel: 'chat-engine-jquery-kitchen-sink-2',
+    globalChannel: 'chat-engine-jquery-kitchen-sink',
     authUrl: 'http://localhost:3000/insecure'
 });
 
@@ -329,7 +334,14 @@ let username = window.location.hash.substr(1);
 // create a user for myself and store as ```me```
 ChatEngine.connect(username || new Date().getTime().toString(), {}, 'auth-key');
 
+ChatEngine.onAny((event, payload) => {
+
+    // console.info(event)
+
+});
+
 ChatEngine.on('$.session.chat.new', (data) => {
+
     if(data.chat.group == 'default') {
         renderChat(data.chat);
         data.chat.connect();
@@ -351,6 +363,8 @@ ChatEngine.on('$.session.chat.leave', (data) => {
 });
 
 ChatEngine.on('$.ready', (data) => {
+
+    console.log(data)
 
     me = data.me;
 

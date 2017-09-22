@@ -5,7 +5,7 @@
     <div class="card">
 
         <div class="card-block">
-            <p class="card-text">{{Me.profile.state().name}}</p>
+            <p class="card-text">{{Me.profile.state.name}}</p>
         </div>
 
         <div class="card-block">
@@ -27,14 +27,14 @@
         <ul id="online-list" class="list-group list-group-flush">
 
           <li class="list-group-item" ng-repeat="(uuid, user) in chat.users" ng-hide="user.hideWhileSearch" ng-controller="OnlineUser">
-              <a href="" ng-click="newChat(user)"><img ng-src="{{user.state().picture}}" class="avatar">{{user.state().name}}</a> 
-              <span class="show-typing" ng-show="user.isTyping">is typing...</span> 
+              <a href="" ng-click="newChat(user)"><img ng-src="{{user.state.picture}}" class="avatar">{{user.state.name}}</a>
+              <span class="show-typing" ng-show="user.isTyping">is typing...</span>
           </li>
 
         </ul>
 
         <div class="card-block">
-            
+
             <form class="send-message" ng-submit="userSearch.fire()">
                 <div class="input-group">
                     <input id="usernameSearch" type="text" class="form-control message" placeholder="Search for Username" ng-change="userSearch.fire()" ng-model="userSearch.input">
