@@ -65,7 +65,7 @@ const $userTemplate = function(user, chat) {
 const identifyMe = function(username) {
 
     if(!username) {
-        me.plugin(ChatEngineCore.plugin['chat-engine-random-username'](ChatEngine.global));
+        me.plugin(ChatEngineCore.plugin['chat-engine-random-username']());
     } else {
         me.update({username: username})
     }
