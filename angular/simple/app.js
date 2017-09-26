@@ -116,6 +116,7 @@ angular.module('chatApp', ['open-chat-framework'])
         $scope.ChatEngine.on('$.ready', (data) => {
 
             $scope.me = data.me;
+
             $scope.me.plugin(ChatEngineCore.plugin['chat-engine-random-username']($scope.ChatEngine.global));
 
             $scope.ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']());

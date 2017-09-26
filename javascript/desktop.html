@@ -471,7 +471,9 @@
 
             for (var j = 3; j > 0; j--) {
                 var tempPerson = generatePerson(false);
+
                 var ceTemp = new this.ChatEngine.User(tempPerson.uuid, tempPerson);
+
                 this.users.push(ceTemp)
             }
 
@@ -529,6 +531,7 @@
 
             $('#people-list ul').empty();
             this.users.forEach(function(user) {
+
                 $('#people-list ul').append(peopleTemplate(user.state));
             });
 

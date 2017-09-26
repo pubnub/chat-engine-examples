@@ -57,7 +57,9 @@
             signedOnTime: new Date().getTime()
         }, 'friend-auth-key');
 
-        ChatEngine.on('$.ready', () => {
+        ChatEngine.on('$.ready', (data) => {
+
+            let me = data.me;
 
             uuids.forEach(function(uuid) {
 
@@ -69,23 +71,18 @@
 
                 onlineOutput.appendChild(div);
 
-                // requires that users have
+                users[uuid].feed.on('$.online.*', (payload) => {
 
-                // users[uuid].feed.onAny((a) => {
-                //     console.log(a)
-                // });
+                    console.log(payload)
 
-                // users[uuid].feed.on('$.online.*', (payload) => {
+                    // if user is subscribed to their own feed
+                    if (uuid == payload.user.uuid) {
+                        div.innerHTML = div.innerHTML + ' (online)';
+                    }
 
-                //     console.log(payload)
+                });
 
-                //     // if user is subscribed to their own feed
-                //     if (uuid == payload.user.uuid) {
-                //         div.innerHTML = div.innerHTML + ' (online)';
-                //     }
-
-                // });
-
+                // if these users were real, we would call
                 // users[uuid].feed.connect();
 
             });

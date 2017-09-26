@@ -1,7 +1,7 @@
 {
   "name": "chat-engine-examples",
   "version": "0.0.1",
-  "description": "Examples of OCF for a ton of frameworks",
+  "description": "Examples of Chat Engine for a ton of frameworks",
   "main": "index.html",
   "dependencies": {
     "chat-engine": "^0.4.2",
