@@ -8,7 +8,7 @@
     "chat-engine-desktop-notifications": "0.0.x",
     "chat-engine-emoji": "0.0.x",
     "chat-engine-markdown": "0.0.x",
-    "chat-engine-online-user-search": "0.0.x",
+    "chat-engine-online-user-search": "0.0.7",
     "chat-engine-random-username": "0.0.x",
     "chat-engine-typing-indicator": "0.0.x",
     "chat-engine-unread-messages": "0.0.x",
