@@ -10,6 +10,7 @@ const ChatEngine = ChatEngineCore.create({
     publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
     subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
 }, {
+    // endpoint: 'http://192.168.0.14:3000/insecure',
     endpoint: 'http://localhost:3000/insecure',
     globalChannel: 'chat-engine-react-native'
 });
@@ -54,7 +55,7 @@ export default class PizzaTranslator extends Component {
         ChatEngine.connect(username, {
             signedOnTime: now,
             email: new Date()
-        });
+        }, 'auth-key');
 
         ChatEngine.on('$.ready', (data) => {
 
