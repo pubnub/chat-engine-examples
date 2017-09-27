@@ -1,6 +1,6 @@
 "use strict";
 
-let ChatEngineCore = require('../../chat-engine/src/index.js');
+let ChatEngineCore = require('chat-engine');
 let typingIndicator = require('chat-engine-typing-indicator');
 
 var ChatEngine = ChatEngineCore.create({
@@ -14,6 +14,8 @@ var ChatEngine = ChatEngineCore.create({
 ChatEngine.onAny((payload) => {
     console.log('any', payload)
 })
+
+console.log(typingIndicator)
 
 ChatEngine.connect('robot-stephen', { username: 'robot-stephen' }, 'auth-key');
 
@@ -36,6 +38,8 @@ ChatEngine.on('$.ready', (data) => {
             chat.plugin(typingIndicator({
                 timeout: 5000
             }));
+
+            console.log(chat.typingIndicator)
 
             chat.emit('message', 'hey, how can I help you?');
 

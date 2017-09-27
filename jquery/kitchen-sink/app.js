@@ -51,9 +51,20 @@ const $userTemplate = function(user, chat) {
 
     // create the HTML template 9 the user
     let html =
+        '<li class="' + user.uuid + ' list-group-item">';
 
-        '<li class="' + user.uuid + ' list-group-item">' +
-        '<a href="">' + user.state.username + '</a> ' +
+    console.log('tester', user, me)
+
+    if(user.uuid !== me.uuid) {
+        html +=
+            '<a href="">' + user.state.username + '</a> ';
+    } else {
+        html +=
+            '<strong>' + user.state.username + '</strong> ';
+    }
+
+
+    html +=
         '<span class="show-typing">is typing...</span>' +
         '</li>';
 
@@ -352,6 +363,8 @@ ChatEngine.on('$.session.chat.leave', (data) => {
 });
 
 ChatEngine.on('$.ready', (data) => {
+
+    console.log('READY!!!')
 
     me = data.me;
 
