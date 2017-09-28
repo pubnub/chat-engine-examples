@@ -4,14 +4,14 @@ let ChatEngine;
 const $chatTemplate = function(chat) {
 
     let html =
-        '<div class="chat col-xs-12" id="' + chat.channel + '">' +
+        '<div class="chat col-xs-12" id="' + chat.channel.replace(/[^a-zA-Z 0-9]+/g, '') + '">' +
         '<div class="card">' +
         '<div class="card-header">' +
         '<div class="col-sm-6">' +
         chat.channel +
         '</div>' +
         '<div class="col-sm-6 text-right">' +
-        '<a href="#" class="close">x</a>' +
+        '<a href="" class="close">x</a>' +
         '</div>' +
         '</div>' +
 
@@ -40,7 +40,7 @@ const $messageTemplate = function(payload, classes) {
 
     let html =
         '<div class="' + classes + '">' +
-        '<p class="text-muted username">' + payload.sender.state().username + '</p>' +
+        '<p class="text-muted username">' + payload.sender.state.username + '</p>' +
         '<p>' + payload.data + '</p>' +
         '</div>';
 
@@ -49,12 +49,22 @@ const $messageTemplate = function(payload, classes) {
 
 const $userTemplate = function(user, chat) {
 
-    let state = user.state(chat);
-
-    // create the HTML template for the user
+    // create the HTML template 9 the user
     let html =
-        '<li class="' + user.uuid + ' list-group-item">' +
-        '<a href="#">' + state.username + '</a> ' +
+        '<li class="' + user.uuid + ' list-group-item">';
+
+    console.log('tester', user, me)
+
+    if(user.uuid !== me.uuid) {
+        html +=
+            '<a href="">' + user.state.username + '</a> ';
+    } else {
+        html +=
+            '<strong>' + user.state.username + '</strong> ';
+    }
+
+
+    html +=
         '<span class="show-typing">is typing...</span>' +
         '</li>';
 
@@ -63,9 +73,13 @@ const $userTemplate = function(user, chat) {
 }
 
 // function to create concept of "me"
-const identifyMe = function() {
+const identifyMe = function(username) {
 
-    me.plugin(ChatEngineCore.plugin['chat-engine-random-username'](ChatEngine.global));
+    if(!username) {
+        me.plugin(ChatEngineCore.plugin['chat-engine-random-username']());
+    } else {
+        me.update({username: username})
+    }
 
     // when I get a private invite
     me.direct.on('$.invite', (payload) => {
@@ -74,14 +88,14 @@ const identifyMe = function() {
     });
 
     // render the value of me in the GUI
-    $('#me').text(me.state().username + ' with uuid: ' + me.uuid);
+    $('#me').text(me.state.username + ' with uuid: ' + me.uuid);
 
 }
 
 // GUI render functions
 
 // render a ChatEngine.User object in a list
-const renderUser = function($el, user, chat) {
+const renderUser = function($el, user) {
 
     // render user in this chat with their state from global
     let $tpl = $userTemplate(user, ChatEngine.global);
@@ -94,7 +108,6 @@ const renderUser = function($el, user, chat) {
 
         // create a new chat with that channel
         let newChat = new ChatEngine.Chat(chan);
-
         newChat.on('$.connected', () => {
 
             // this fires a private invite to the user
@@ -103,47 +116,56 @@ const renderUser = function($el, user, chat) {
 
         });
 
+        return false;
+
     });
 
     // hide "is typingIndicator..." by defualt
     $tpl.find('.show-typing').hide();
 
-    let $existingEl = $el.find('.' + user.uuid);
-
-    if ($existingEl.length) {
-        $existingEl.replaceWith($tpl);
-    } else {
-
-        // append the user element to the input element on dom
-        $el.append($tpl);
-
-    }
+    return $tpl;
 
 };
+
+const updateUser = function(user) {
+
+    let $el = $('body').find('.' + user.uuid);
+    $el.replaceWith(renderUser($el, user));
+
+}
+
+const userExists = function($el, user) {
+    return $el.find('.' + user.uuid).length > 0;
+}
 
 // turn ChatEngine.Chat into an online list
 const renderOnlineList = function($el, chat) {
 
-    for (var key in chat.users) {
-        renderUser($el, chat.users[key], chat);
+    let userId = null;
+    for(userId in chat.users) {
+
+        if(!userExists($el, chat.users[userId])) {
+            $el.append(renderUser($el, chat.users[userId]))
+        }
+
     }
 
     // when someone joins the chat
     chat.on('$.online.*', (payload) => {
-        // render the user in the online list and bind events
-        renderUser($el, payload.user, chat);
+
+        if(!userExists($el, payload.user)) {
+            // render the user in the online list and bind events
+            $el.append(renderUser($el, payload.user));
+        }
     });
 
     chat.on('$.offline.*', (payload) => {
-        $('.' + payload.user.uuid).remove();
+        $el.find('.' + payload.user.uuid).remove();
     });
 
-    chat.on('$.state', (payload) => {
-        renderUser($el, payload.user, chat);
-    });
 
     chat.plugin(ChatEngineCore.plugin['chat-engine-typing-indicator']({
-        timeout: 5000
+        timeout: 1000
     }));
 
 }
@@ -222,8 +244,6 @@ const renderChat = function(privateChat) {
     // if this chat receives a message that's not from this sessions
     privateChat.on('$.history.message', function(payload) {
 
-        console.log(payload)
-
         // render it in the DOM with a special class
         renderMessage(payload, 'text-muted');
     });
@@ -233,7 +253,7 @@ const renderChat = function(privateChat) {
     privateChat.on('$typingIndicator.startTyping', (payload) => {
 
         // write some text saying that user is typing
-        $tpl.find('.typing').text(payload.sender.state().username + ' is typing...');
+        $tpl.find('.typing').text(payload.sender.state.username + ' is typing...');
 
         // and show their typing indication next to their name in any other location
         $tpl.find('.' + payload.sender.uuid).find('.show-typing').show();
@@ -254,8 +274,10 @@ const renderChat = function(privateChat) {
     // when someone closes a private chat
     $tpl.find('.close').click(() => {
         // remove the element from the DOM
-        $tpl.remove();
-        // @todo disconnect
+        privateChat.leave();
+
+        return false;
+
     });
 
     // append the chat to the DOM
@@ -303,22 +325,51 @@ const bindUsernamePlugin = function() {
 
 // ChatEngine Configure
 ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
-    subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
+    publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+    subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe',
 }, {
     globalChannel: 'chat-engine-jquery-kitchen-sink',
-    insecure: true
+    endpoint: 'http://localhost:3000/insecure'
 });
 
+let username = window.location.hash.substr(1);
+
 // create a user for myself and store as ```me```
-ChatEngine.connect(new Date().getTime().toString(), {}, 'auth-key');
+ChatEngine.connect(username || new Date().getTime().toString(), {}, 'auth-key');
+
+ChatEngine.onAny((event, payload) => {
+
+    console.info(event, payload)
+
+});
+
+ChatEngine.on('$.session.chat.new', (data) => {
+
+    if(data.chat.group == 'default') {
+        renderChat(data.chat);
+        data.chat.connect();
+    }
+});
+
+ChatEngine.on('$.session.chat.join', (data) => {
+    if(data.chat.group == 'default') {
+        renderChat(data.chat);
+        data.chat.connect();
+    }
+});
+ChatEngine.on('$.session.chat.leave', (data) => {
+
+    $('#' + data.chat.channel.replace(/[^a-zA-Z 0-9]+/g, '')).remove();
+});
 
 ChatEngine.on('$.ready', (data) => {
+
+    console.log('READY!!!')
 
     me = data.me;
 
     // set up the concept of me and global
-    identifyMe();
+    identifyMe(username);
 
     // render the ChatEngine.global now that it's defined
     // this onlineList can spawn other chats
@@ -327,4 +378,8 @@ ChatEngine.on('$.ready', (data) => {
     // plug the search bar into the username plugin
     bindUsernamePlugin();
 
+});
+
+ChatEngine.on('$.state', (payload) => {
+    updateUser(payload.user);
 });

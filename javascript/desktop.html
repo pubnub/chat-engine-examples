@@ -446,11 +446,11 @@
         init: function() {
 
             this.ChatEngine = ChatEngineCore.create({
-                publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
-                subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
+                publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+                subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
             }, {
-                globalChannel: 'chat-engine-demo-style',
-                insecure: true
+                endpoint: 'http://localhost:3000/insecure',
+                globalChannel: 'chat-engine-demo-style'
             });
 
             let newPerson = generatePerson(true);
@@ -471,7 +471,9 @@
 
             for (var j = 3; j > 0; j--) {
                 var tempPerson = generatePerson(false);
+
                 var ceTemp = new this.ChatEngine.User(tempPerson.uuid, tempPerson);
+
                 this.users.push(ceTemp)
             }
 
@@ -529,7 +531,8 @@
 
             $('#people-list ul').empty();
             this.users.forEach(function(user) {
-                $('#people-list ul').append(peopleTemplate(user.state()));
+
+                $('#people-list ul').append(peopleTemplate(user.state));
             });
 
         },
@@ -548,7 +551,7 @@
             var context = {
                 messageOutput: message.data,
                 time: app.getCurrentTime(),
-                user: message.sender.state()
+                user: message.sender.state
             };
 
             app.$chatHistoryList.append(template(context));

@@ -49,11 +49,11 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
         // ChatEngine Configure
         const ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
-            subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
+            publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+            subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
         }, {
-            globalChannel: 'chat-engine-flowtron',
-            insecure: true
+            endpoint: 'http://localhost:3000/insecure',
+            globalChannel: 'chat-engine-flowtron'
         });
 
         // bind open chat framework angular plugin
@@ -286,7 +286,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         $scope.newChat = function(user) {
 
             // define a channel using the clicked user's username and this client's username
-            let chan = [Me.profile.state().user_id, user.state().user_id].sort().join('#')
+            let chan = [Me.profile.state.user_id, user.state.user_id].sort().join('#')
 
             // create a new chat with that channel
             let newChat = new ChatEngine.Chat(chan);
@@ -310,6 +310,8 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         $scope.rooms = Rooms.list;
 
         $scope.Me = Me;
+
+        console.log($scope.Me)
 
         // bind chat to updates
         $scope.chat = ChatEngine.global;

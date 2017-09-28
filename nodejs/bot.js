@@ -1,19 +1,15 @@
 "use strict";
 
-let ChatEngineCore = require('../../chat-engine/src/index.js');
+let ChatEngineCore = require('../../chat-engine');
 let typingIndicator = require('chat-engine-typing-indicator');
 
 var ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
-    subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
+    publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+    subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
 }, {
-    globalChannel: 'chat-engine-jquery-kitchen-sink',
-    insecure: true
+    endpoint: 'http://localhost:3000/insecure',
+    globalChannel: 'chat-engine-jquery-kitchen-sink'
 });
-
-ChatEngine.onAny((payload) => {
-    console.log('any', payload)
-})
 
 ChatEngine.connect('robot-stephen', { username: 'robot-stephen' }, 'auth-key');
 
@@ -49,10 +45,7 @@ ChatEngine.on('$.ready', (data) => {
 
                         setTimeout((argument) => {
 
-                            console.log(payload.sender.state())
-                            console.log(chat.users)
-
-                            chat.emit('message', 'hey there ' + payload.sender.state().username);
+                            chat.emit('message', 'hey there ' + payload.sender.state.username);
 
                             chat.typingIndicator.stopTyping(); // add this to plugin middleware
 

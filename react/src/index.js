@@ -7,11 +7,11 @@ const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-bcf4e625-d5e0-45de-9f74-f222bf63a4a1',
-    subscribeKey: 'sub-c-70f29a7c-8927-11e7-af73-96e8309537a2',
-}, {
-    globalChannel: 'chat-engine-react',
-    insecure: true
+        publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
+        subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+    }, {
+        endpoint: 'http://localhost:3000/insecure',
+    globalChannel: 'chat-engine-react'
 });
 
 ChatEngine.connect(username, {
