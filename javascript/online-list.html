@@ -29,7 +29,7 @@
             </div>
         </div>
         <div id="chat-online"></div>
-        <script src="../node_modules/chat-engine/dist/latest/chat-engine.js" type="text/javascript"></script>
+        <script src="../../chat-engine/dist/latest/chat-engine.js" type="text/javascript"></script>
         <script type="text/javascript">
         const now = new Date().getTime();
         const username = ['user', now].join('-');
@@ -50,6 +50,8 @@
 
         ChatEngine.on('$.ready', () => {
 
+            let onlineEvents = 0;
+
             ChatEngine.global.on('$.online.*', (payload) => {
 
                 let div = document.createElement("li");
@@ -57,7 +59,13 @@
                 div.className += " list-group-item";
                 onlineOutput.appendChild(div);
 
+                onlineEvents++;
+
             });
+
+            setInterval(function() {
+                console.log(Object.keys(ChatEngine.global.users).length, onlineEvents, ChatEngine.global.users)
+            }, 1000);
 
         });
 

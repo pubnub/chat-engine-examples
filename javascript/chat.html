@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <script src="../node_modules/chat-engine/dist/latest/chat-engine.js" type="text/javascript"></script>
+        <script src="../../chat-engine/dist/latest/chat-engine.js" type="text/javascript"></script>
         <script type="text/javascript">
         const now = new Date().getTime();
         const username = ['user', now].join('-');
@@ -82,11 +82,6 @@
                 textOutput.appendChild(div);
 
             });
-
-            ChatEngine.global.onAny((event, data) => {
-                console.info(event, data)
-            });
-
         });
         </script>
 </body>

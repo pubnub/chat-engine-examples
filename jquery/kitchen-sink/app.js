@@ -53,8 +53,6 @@ const $userTemplate = function(user, chat) {
     let html =
         '<li class="' + user.uuid + ' list-group-item">';
 
-    console.log('tester', user, me)
-
     if(user.uuid !== me.uuid) {
         html +=
             '<a href="">' + user.state.username + '</a> ';
@@ -141,15 +139,6 @@ const userExists = function($el, user) {
 // turn ChatEngine.Chat into an online list
 const renderOnlineList = function($el, chat) {
 
-    let userId = null;
-    for(userId in chat.users) {
-
-        if(!userExists($el, chat.users[userId])) {
-            $el.append(renderUser($el, chat.users[userId]))
-        }
-
-    }
-
     // when someone joins the chat
     chat.on('$.online.*', (payload) => {
 
@@ -157,6 +146,7 @@ const renderOnlineList = function($el, chat) {
             // render the user in the online list and bind events
             $el.append(renderUser($el, payload.user));
         }
+
     });
 
     chat.on('$.offline.*', (payload) => {
@@ -337,12 +327,6 @@ let username = window.location.hash.substr(1);
 // create a user for myself and store as ```me```
 ChatEngine.connect(username || new Date().getTime().toString(), {}, 'auth-key');
 
-ChatEngine.onAny((event, payload) => {
-
-    console.info(event, payload)
-
-});
-
 ChatEngine.on('$.session.chat.new', (data) => {
 
     if(data.chat.group == 'default') {
@@ -363,8 +347,6 @@ ChatEngine.on('$.session.chat.leave', (data) => {
 });
 
 ChatEngine.on('$.ready', (data) => {
-
-    console.log('READY!!!')
 
     me = data.me;
 
