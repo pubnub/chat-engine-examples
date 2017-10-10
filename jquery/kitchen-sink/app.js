@@ -230,10 +230,8 @@ const renderChat = function(privateChat) {
         $tpl.find('.log').append(renderMessage(payload, null));
     });
 
-    console.log('calling history')
-
     // if this chat receives a message that's not from this sessions
-    privateChat.history({
+    privateChat.search({
         event: 'message',
         limit: 100
     }).on('message', function(payload) {

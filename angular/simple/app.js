@@ -68,12 +68,13 @@ angular.module('chatApp', ['open-chat-framework'])
         }
 
         // if this chat receives a message that's not from this sessions
-        $scope.chat.on('$.history.message', function(payload) {
+        $scope.chat.history({
+            event: 'message'
+        }).on('message', function(payload) {
 
             // render it in the DOM with a special class
             addMessage(payload, true);
-        });
-        $scope.chat.history('message');
+        })
 
         // when this chat gets a message
         $scope.chat.on('message', function(payload) {
