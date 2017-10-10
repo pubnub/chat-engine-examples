@@ -197,30 +197,27 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                         sounds.broadcast.play();
                     }
 
-                    // add the message to the array
-                    room.messages.push(payload);
+                    if(type == 'history') {
+                        // add the message to the array
+                        room.messages.unshift(payload);
+                    } else {
+                        // add the message to the array
+                        room.messages.push(payload);
+                    }
 
                 }
 
-                room.chat.on('$.history.message', function(payload) {
-
-                    // render it in the DOM with a special class
-                    addMessage(payload, '$.history.message');
-
-                });
-                room.chat.history('message');
+                room.chat.search()
+                    .on('message', function(payload) {
+                        addMessage(payload, 'history');
+                    }).on('upload', function(payload) {
+                        addMessage(payload, 'upload');
+                    });
 
                 room.chat.on('message', function(payload) {
 
                     // render it in the DOM
                     addMessage(payload, 'message');
-                });
-
-                room.chat.on('$.history.upload', function(payload) {
-
-                    // render it in the DOM with a special class
-                    addMessage(payload, 'upload');
-
                 });
 
                 room.chat.on('upload', (payload) => {
@@ -362,7 +359,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
             $scope.scrollToBottom();
         });
 
-        $scope.chat.on('$.history.*', () => {
+        $scope.chat.on('$.search.finish', () => {
             $scope.scrollToBottom();
         });
 

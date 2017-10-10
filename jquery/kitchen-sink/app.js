@@ -233,9 +233,9 @@ const renderChat = function(privateChat) {
     // if this chat receives a message that's not from this sessions
     privateChat.search({
         event: 'message',
-        limit: 100
+        sender: new ChatEngine.User('maria'),
+        limit: 2
     }).on('message', function(payload) {
-        // render it in the DOM with a special class
         // prepend because we go backward
         $tpl.find('.log').prepend(renderMessage(payload, 'text-muted'));
     });

@@ -21,11 +21,11 @@
 
     <div id="log" class="card-block">
         <div class="log">
-            <div class="row message" ng-repeat="message in room.messages" ng-class="{'same-user': message.sameUser, 'text-muted': message.type == '$.history.message', 'is-self': !message.isSelf}">
+            <div class="row message" ng-repeat="message in room.messages" ng-class="{'same-user': message.sameUser, 'text-muted': message.type == 'history', 'is-self': !message.isSelf}">
                 <div class="col col-2 text-right">
                     <strong class="username">{{message.sender.state.name}}</strong>
                 </div>
-                <div class="col col-6" ng-if="message.type == '$.history.message' || message.type == 'message'">
+                <div class="col col-6" ng-if="message.type == 'history' || message.type == 'message'">
                     <p ng-bind-html="message.data.text"></p>
                 </div>
                 <div class="col col-6" ng-if="message.type == 'upload'">
