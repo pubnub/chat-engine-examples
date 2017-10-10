@@ -220,24 +220,27 @@ const renderChat = function(privateChat) {
         // set the lastSender as the sender's uuid
         lastSender = payload.sender.uuid;
 
-        // append the message to the chatroom log
-        $tpl.find('.log').append($messageTemplate(payload, classes));
+        return $messageTemplate(payload, classes);
 
     }
 
     // when this chat gets a message
     privateChat.on('message', function(payload) {
-        // render it in the DOM
-        renderMessage(payload, null);
+        // append the message to the chatroom log
+        $tpl.find('.log').append(renderMessage(payload, null));
     });
+
+    console.log('calling history')
 
     // if this chat receives a message that's not from this sessions
-    privateChat.on('$.history.message', function(payload) {
-
+    privateChat.history({
+        event: 'message',
+        limit: 100
+    }).on('message', function(payload) {
         // render it in the DOM with a special class
-        renderMessage(payload, 'text-muted');
+        // prepend because we go backward
+        $tpl.find('.log').prepend(renderMessage(payload, 'text-muted'));
     });
-    privateChat.history('message');
 
     // when this chat gets the typing event
     privateChat.on('$typingIndicator.startTyping', (payload) => {
