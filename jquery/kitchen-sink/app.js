@@ -233,8 +233,7 @@ const renderChat = function(privateChat) {
     // if this chat receives a message that's not from this sessions
     privateChat.search({
         event: 'message',
-        sender: new ChatEngine.User('maria'),
-        limit: 2
+        limit: 10
     }).on('message', function(payload) {
         // prepend because we go backward
         $tpl.find('.log').prepend(renderMessage(payload, 'text-muted'));
@@ -316,35 +315,28 @@ const bindUsernamePlugin = function() {
 
 // ChatEngine Configure
 ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-    subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe',
+    publishKey: 'pub-c-311175ef-cdc1-4da9-9b70-f3e129bb220e',
+    subscribeKey: 'sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700',
 }, {
-    globalChannel: 'chat-engine-jquery-kitchen-sink',
-    endpoint: 'http://localhost:3000/insecure'
+    endpoint: 'https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700/insecure',
+    globalChannel: 'chat-engine-jquery-kitchen-sink'
 });
+
+ChatEngine.onAny((a, b) => {
+    console.log(a,b)
+})
 
 let username = window.location.hash.substr(1);
 
 // create a user for myself and store as ```me```
 ChatEngine.connect(username || new Date().getTime().toString(), {}, 'auth-key');
 
-ChatEngine.on('$.session.chat.new', (data) => {
-
-    if(data.chat.group == 'default') {
-        renderChat(data.chat);
-        data.chat.connect();
-    }
-});
-
 ChatEngine.on('$.session.chat.join', (data) => {
+
     if(data.chat.group == 'default') {
         renderChat(data.chat);
         data.chat.connect();
     }
-});
-ChatEngine.on('$.session.chat.leave', (data) => {
-
-    $('#' + data.chat.channel.replace(/[^a-zA-Z 0-9]+/g, '')).remove();
 });
 
 ChatEngine.on('$.ready', (data) => {
@@ -360,6 +352,19 @@ ChatEngine.on('$.ready', (data) => {
 
     // plug the search bar into the username plugin
     bindUsernamePlugin();
+
+    me.on('$.session.chat.join', (data) => {
+
+        if(data.chat.group == 'custom') {
+            renderChat(data.chat);
+            data.chat.connect();
+        }
+
+    });
+    me.on('$.session.chat.leave', (data) => {
+
+        $('#' + data.chat.channel.replace(/[^a-zA-Z 0-9]+/g, '')).remove();
+    });
 
 });
 

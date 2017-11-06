@@ -43,18 +43,26 @@
         let sendChat = function() {}; // will be filled in when ChatEngine connects
 
         const ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-            subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+            publishKey: 'pub-c-311175ef-cdc1-4da9-9b70-f3e129bb220e',
+            subscribeKey: 'sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700',
         }, {
-            endpoint: 'http://localhost:3000/insecure',
+            endpoint: 'https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700/insecure',
             globalChannel: 'chat-engine-demo-js'
+        });
+
+        ChatEngine.onAny((a) => {
+            // console.log(a)
         });
 
         ChatEngine.connect(username, {
             signedOnTime: now
-        }, 'auth-key');
+        }, 'auth-key' + new Date().getTime());
 
-        ChatEngine.on('$.ready', () => {
+        ChatEngine.on('$.ready', (data) => {
+
+            data.me.direct.onAny((a) => {
+                console.log(a)
+            })
 
             sendChat = function(e) {
 
