@@ -7,12 +7,11 @@ const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-    subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+    publishKey: 'pub-c-ba506880-c7fc-4ed7-9cbc-84b251947faf',
+    subscribeKey: 'sub-c-26bd01b2-c3f2-11e7-a957-6e5a35a6e3d1'
 }, {
-    // endpoint: 'http://192.168.0.14:3000/insecure',
-    endpoint: 'http://localhost:3000/insecure',
-    globalChannel: 'chat-engine-react-native'
+    globalChannel: 'react-native-demo',
+    debug: true
 });
 
 export default class PizzaTranslator extends Component {
@@ -51,6 +50,7 @@ export default class PizzaTranslator extends Component {
 
     componentDidMount() {
 
+        console.log('connecting');
 
         ChatEngine.connect(username, {
             signedOnTime: now,
