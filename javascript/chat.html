@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/chat-engine@0.8.4/dist/chat-engine.js" type="text/javascript"></script>
+        <script src="../node_modules/chat-engine/dist/chat-engine.js" type="text/javascript"></script>
         <script type="text/javascript">
         const now = new Date().getTime();
         const username = ['user', now].join('-');
@@ -46,7 +46,8 @@
             publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
             subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
         }, {
-            globalChannel: 'chat-engine-demo-js'
+            globalChannel: 'chat-engine-demo-js',
+            debug: true
         });
 
         ChatEngine.onAny((a) => {

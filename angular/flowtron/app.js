@@ -49,10 +49,10 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
         // ChatEngine Configure
         const ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-311175ef-cdc1-4da9-9b70-f3e129bb220e',
-            subscribeKey: 'sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700',
+            publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
+            subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
         }, {
-            endpoint: 'https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700/insecure',
+            debug: true,
             globalChannel: 'chat-engine-flowtron'
         });
 
