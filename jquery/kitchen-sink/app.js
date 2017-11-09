@@ -41,7 +41,7 @@ const $messageTemplate = function(payload, classes) {
     let html =
         '<div class="' + classes + '">' +
         '<p class="text-muted username">' + payload.sender.state.username + '</p>' +
-        '<p>' + payload.data + '</p>' +
+        '<p>' + payload.data.text + '</p>' +
         '</div>';
 
     return $(html);
@@ -187,7 +187,9 @@ const renderChat = function(privateChat) {
         privateChat.typingIndicator.stopTyping();
 
         // send the mssage over the network
-        privateChat.emit('message', $tpl.find('.message').val());
+        privateChat.emit('message', {
+            text: $tpl.find('.message').val()
+        });
 
         // empty the input
         $tpl.find('.message').val('');
@@ -315,8 +317,8 @@ const bindUsernamePlugin = function() {
 
 // ChatEngine Configure
 ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-f46f2a28-7333-4eb6-8bb5-f214fbe3da59',
-    subscribeKey: 'sub-c-13b26ef8-c4d9-11e7-9178-bafd478c18bc'
+    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
+    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
 }, {
     globalChannel: 'chat-engine-jquery-kitchen-sink',
     debug: true
