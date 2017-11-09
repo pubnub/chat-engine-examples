@@ -2,10 +2,9 @@ angular.module('chatApp', ['open-chat-framework'])
     .run(['$rootScope', 'ngChatEngine', function($rootScope, ngChatEngine) {
 
         $rootScope.ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-311175ef-cdc1-4da9-9b70-f3e129bb220e',
-            subscribeKey: 'sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700',
+            publishKey: 'pub-c-f46f2a28-7333-4eb6-8bb5-f214fbe3da59',
+            subscribeKey: 'sub-c-13b26ef8-c4d9-11e7-9178-bafd478c18bc'
         }, {
-            endpoint: 'https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700/insecure',
             globalChannel: 'chat-engine-angular-simple'
         });
 
@@ -36,7 +35,9 @@ angular.module('chatApp', ['open-chat-framework'])
 
         // send a message using the messageDraft input
         $scope.sendMessage = () => {
-            $scope.chat.emit('message', $scope.messageDraft);
+            $scope.chat.emit('message', {
+                text: $scope.messageDraft
+            });
             $scope.messageDraft = '';
         }
 
@@ -124,8 +125,16 @@ angular.module('chatApp', ['open-chat-framework'])
 
             // when I get a private invit
             $scope.me.direct.on('$.invite', (payload) => {
+
+                let chat = new $scope.ChatEngine.Chat(payload.data.channel);
+
+                chat.onAny((a,b) => {
+                    console.log(a)
+                });
+
                 // create a new chat and render it in DOM
-                $scope.chats.push(new $scope.ChatEngine.Chat(payload.data.channel));
+                $scope.chats.push(chat);
+
             });
 
             // bind chat to updates
@@ -165,10 +174,5 @@ angular.module('chatApp', ['open-chat-framework'])
             };
 
         });
-
-        $scope.ChatEngine.onAny((event) => {
-            console.log(event)
-        });
-
 
     });

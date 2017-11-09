@@ -50,8 +50,6 @@ export default class PizzaTranslator extends Component {
 
     componentDidMount() {
 
-        console.log('connecting');
-
         ChatEngine.connect(username, {
             signedOnTime: now,
             email: new Date()
@@ -64,10 +62,6 @@ export default class PizzaTranslator extends Component {
             me.plugin(ChatEngineGravatar());
 
             ChatEngine.global.on('message', (payload) => {
-
-                console.log(payload)
-
-                console.log('gravatar', 'https:' + payload.sender.state.gravatar)
 
                 this.messages.push(payload);
 

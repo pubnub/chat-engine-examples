@@ -315,16 +315,12 @@ const bindUsernamePlugin = function() {
 
 // ChatEngine Configure
 ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-311175ef-cdc1-4da9-9b70-f3e129bb220e',
-    subscribeKey: 'sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700',
+    publishKey: 'pub-c-f46f2a28-7333-4eb6-8bb5-f214fbe3da59',
+    subscribeKey: 'sub-c-13b26ef8-c4d9-11e7-9178-bafd478c18bc'
 }, {
-    endpoint: 'https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-a3da7f1c-bfe7-11e7-a9bc-9af884579700/insecure',
-    globalChannel: 'chat-engine-jquery-kitchen-sink'
+    globalChannel: 'chat-engine-jquery-kitchen-sink',
+    debug: true
 });
-
-ChatEngine.onAny((a, b) => {
-    console.log(a,b)
-})
 
 let username = window.location.hash.substr(1);
 
