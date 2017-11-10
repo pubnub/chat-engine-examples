@@ -41,7 +41,7 @@ const $messageTemplate = function(payload, classes) {
     let html =
         '<div class="' + classes + '">' +
         '<p class="text-muted username">' + payload.sender.state.username + '</p>' +
-        '<p>' + payload.data + '</p>' +
+        '<p>' + payload.data.text + '</p>' +
         '</div>';
 
     return $(html);
@@ -52,8 +52,6 @@ const $userTemplate = function(user, chat) {
     // create the HTML template 9 the user
     let html =
         '<li class="' + user.uuid + ' list-group-item">';
-
-    console.log('tester', user, me)
 
     if(user.uuid !== me.uuid) {
         html +=
@@ -141,15 +139,6 @@ const userExists = function($el, user) {
 // turn ChatEngine.Chat into an online list
 const renderOnlineList = function($el, chat) {
 
-    let userId = null;
-    for(userId in chat.users) {
-
-        if(!userExists($el, chat.users[userId])) {
-            $el.append(renderUser($el, chat.users[userId]))
-        }
-
-    }
-
     // when someone joins the chat
     chat.on('$.online.*', (payload) => {
 
@@ -157,6 +146,7 @@ const renderOnlineList = function($el, chat) {
             // render the user in the online list and bind events
             $el.append(renderUser($el, payload.user));
         }
+
     });
 
     chat.on('$.offline.*', (payload) => {
@@ -197,7 +187,9 @@ const renderChat = function(privateChat) {
         privateChat.typingIndicator.stopTyping();
 
         // send the mssage over the network
-        privateChat.emit('message', $tpl.find('.message').val());
+        privateChat.emit('message', {
+            text: $tpl.find('.message').val()
+        });
 
         // empty the input
         $tpl.find('.message').val('');
@@ -230,24 +222,24 @@ const renderChat = function(privateChat) {
         // set the lastSender as the sender's uuid
         lastSender = payload.sender.uuid;
 
-        // append the message to the chatroom log
-        $tpl.find('.log').append($messageTemplate(payload, classes));
+        return $messageTemplate(payload, classes);
 
     }
 
     // when this chat gets a message
     privateChat.on('message', function(payload) {
-        // render it in the DOM
-        renderMessage(payload, null);
+        // append the message to the chatroom log
+        $tpl.find('.log').append(renderMessage(payload, null));
     });
 
     // if this chat receives a message that's not from this sessions
-    privateChat.on('$.history.message', function(payload) {
-
-        // render it in the DOM with a special class
-        renderMessage(payload, 'text-muted');
+    privateChat.search({
+        event: 'message',
+        limit: 10
+    }).on('message', function(payload) {
+        // prepend because we go backward
+        $tpl.find('.log').prepend(renderMessage(payload, 'text-muted'));
     });
-    privateChat.history('message');
 
     // when this chat gets the typing event
     privateChat.on('$typingIndicator.startTyping', (payload) => {
@@ -325,11 +317,11 @@ const bindUsernamePlugin = function() {
 
 // ChatEngine Configure
 ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-    subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe',
+    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
+    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
 }, {
     globalChannel: 'chat-engine-jquery-kitchen-sink',
-    endpoint: 'http://localhost:3000/insecure'
+    debug: true
 });
 
 let username = window.location.hash.substr(1);
@@ -337,34 +329,15 @@ let username = window.location.hash.substr(1);
 // create a user for myself and store as ```me```
 ChatEngine.connect(username || new Date().getTime().toString(), {}, 'auth-key');
 
-ChatEngine.onAny((event, payload) => {
-
-    console.info(event, payload)
-
-});
-
-ChatEngine.on('$.session.chat.new', (data) => {
-
-    if(data.chat.group == 'default') {
-        renderChat(data.chat);
-        data.chat.connect();
-    }
-});
-
 ChatEngine.on('$.session.chat.join', (data) => {
+
     if(data.chat.group == 'default') {
         renderChat(data.chat);
         data.chat.connect();
     }
-});
-ChatEngine.on('$.session.chat.leave', (data) => {
-
-    $('#' + data.chat.channel.replace(/[^a-zA-Z 0-9]+/g, '')).remove();
 });
 
 ChatEngine.on('$.ready', (data) => {
-
-    console.log('READY!!!')
 
     me = data.me;
 
@@ -377,6 +350,19 @@ ChatEngine.on('$.ready', (data) => {
 
     // plug the search bar into the username plugin
     bindUsernamePlugin();
+
+    me.on('$.session.chat.join', (data) => {
+
+        if(data.chat.group == 'custom') {
+            renderChat(data.chat);
+            data.chat.connect();
+        }
+
+    });
+    me.on('$.session.chat.leave', (data) => {
+
+        $('#' + data.chat.channel.replace(/[^a-zA-Z 0-9]+/g, '')).remove();
+    });
 
 });
 

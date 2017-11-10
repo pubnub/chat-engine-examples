@@ -7,12 +7,11 @@ const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-    subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
+    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
 }, {
-    // endpoint: 'http://192.168.0.14:3000/insecure',
-    endpoint: 'http://localhost:3000/insecure',
-    globalChannel: 'chat-engine-react-native'
+    globalChannel: 'react-native-demo',
+    debug: true
 });
 
 export default class PizzaTranslator extends Component {
@@ -51,7 +50,6 @@ export default class PizzaTranslator extends Component {
 
     componentDidMount() {
 
-
         ChatEngine.connect(username, {
             signedOnTime: now,
             email: new Date()
@@ -64,10 +62,6 @@ export default class PizzaTranslator extends Component {
             me.plugin(ChatEngineGravatar());
 
             ChatEngine.global.on('message', (payload) => {
-
-                console.log(payload)
-
-                console.log('gravatar', 'https:' + payload.sender.state.gravatar)
 
                 this.messages.push(payload);
 

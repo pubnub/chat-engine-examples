@@ -399,7 +399,7 @@
             </div>
         </li>
     </script>
-    <script src="../node_modules/chat-engine/dist/latest/chat-engine.js" type="text/javascript"></script>
+    <script src="../node_modules/chat-engine/dist/chat-engine.js" type="text/javascript"></script>
     <script type="text/javascript">
     var generatePerson = function(online) {
 
@@ -445,17 +445,18 @@
         messages: [],
         init: function() {
 
+            // Make sure to import ChatEngine first!
             this.ChatEngine = ChatEngineCore.create({
-                publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-                subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+                publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
+                subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
             }, {
-                endpoint: 'http://localhost:3000/insecure',
-                globalChannel: 'chat-engine-demo-style'
+                debug: true,
+                globalChannel: 'chat-engine-desktop-demo'
             });
 
             let newPerson = generatePerson(true);
 
-            this.ChatEngine.connect(newPerson.uuid, newPerson, 'auth-key');
+            this.ChatEngine.connect(newPerson.uuid, newPerson);
 
             this.cacheDOM();
 
@@ -549,7 +550,7 @@
             }
 
             var context = {
-                messageOutput: message.data,
+                messageOutput: message.data.text,
                 time: app.getCurrentTime(),
                 user: message.sender.state
             };
@@ -566,7 +567,9 @@
 
             if (this.messageToSend.trim() !== '') {
                 this.$textarea.val('');
-                this.chat.emit('message', this.messageToSend);
+                this.chat.emit('message', {
+                    text: this.messageToSend
+                });
             }
 
         },
@@ -591,24 +594,6 @@
 
     app.init();
 
-    // var searchFilter = {
-    //   options: { valueNames: ['name'] },
-    //   init: function() {
-
-    //     var userList = new List('people-list', this.options);
-    //     var noItems = $('<li id="no-items-found">No items found</li>');
-
-    //     userList.on('updated', function(list) {
-    //       if (list.matchingItems.length === 0) {
-    //         $(list.list).append(noItems);
-    //       } else {
-    //         noItems.detach();
-    //       }
-    //     });
-    //   }
-    // };
-
-    // searchFilter.init();
     </script>
 </body>
 

@@ -1,4 +1,4 @@
-# Open Chat Framework Examples
+# PubNub ChatEngine Examples
 
 ## How to run
 

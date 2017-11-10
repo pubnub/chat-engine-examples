@@ -1,1 +1,5 @@
 .DS_Store
+node_modules
+react/node_modules
+react-native/node_modules
+angular/flowtron/electron/node_modules

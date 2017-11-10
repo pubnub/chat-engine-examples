@@ -2,10 +2,10 @@ angular.module('chatApp', ['open-chat-framework'])
     .run(['$rootScope', 'ngChatEngine', function($rootScope, ngChatEngine) {
 
         $rootScope.ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-c6303bb2-8bf8-4417-aac7-e83b52237ea6',
-            subscribeKey: 'sub-c-67db0e7a-50be-11e7-bf50-02ee2ddab7fe'
+            publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
+            subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
         }, {
-            endpoint: 'http://localhost:3000/insecure',
+            debug: true,
             globalChannel: 'chat-engine-angular-simple'
         });
 
@@ -36,7 +36,9 @@ angular.module('chatApp', ['open-chat-framework'])
 
         // send a message using the messageDraft input
         $scope.sendMessage = () => {
-            $scope.chat.emit('message', $scope.messageDraft);
+            $scope.chat.emit('message', {
+                text: $scope.messageDraft
+            });
             $scope.messageDraft = '';
         }
 
@@ -68,12 +70,13 @@ angular.module('chatApp', ['open-chat-framework'])
         }
 
         // if this chat receives a message that's not from this sessions
-        $scope.chat.on('$.history.message', function(payload) {
+        $scope.chat.search({
+            event: 'message'
+        }).on('message', function(payload) {
 
             // render it in the DOM with a special class
             addMessage(payload, true);
-        });
-        $scope.chat.history('message');
+        })
 
         // when this chat gets a message
         $scope.chat.on('message', function(payload) {
@@ -123,8 +126,16 @@ angular.module('chatApp', ['open-chat-framework'])
 
             // when I get a private invit
             $scope.me.direct.on('$.invite', (payload) => {
+
+                let chat = new $scope.ChatEngine.Chat(payload.data.channel);
+
+                chat.onAny((a,b) => {
+                    console.log(a)
+                });
+
                 // create a new chat and render it in DOM
-                $scope.chats.push(new $scope.ChatEngine.Chat(payload.data.channel));
+                $scope.chats.push(chat);
+
             });
 
             // bind chat to updates
@@ -164,10 +175,5 @@ angular.module('chatApp', ['open-chat-framework'])
             };
 
         });
-
-        $scope.ChatEngine.onAny((event) => {
-            console.log(event)
-        });
-
 
     });

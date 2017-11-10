@@ -12,6 +12,6 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
-    "chat-engine": "^0.5.0"
+    "chat-engine": "^0.8.4"
   }
 }
