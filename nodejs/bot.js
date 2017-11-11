@@ -13,7 +13,7 @@ var ChatEngine = ChatEngineCore.create({
     debug: false
 });
 
-ChatEngine.connect('robot', { username: 'rob-the-robot' }, 'auth-key');
+ChatEngine.connect('robot', { username: 'rob-the-robot' });
 
 var chats = {};
 

@@ -15,7 +15,7 @@ const ChatEngine = ChatEngineCore.create({
 
 ChatEngine.connect(username, {
     signedOnTime: now
-}, 'auth-key');
+});
 
 var Message = React.createClass({
     render: function() {

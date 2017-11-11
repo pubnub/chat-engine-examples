@@ -56,7 +56,7 @@
 
         ChatEngine.connect(username, {
             signedOnTime: now
-        }, 'auth-key' + new Date().getTime());
+        });
 
         ChatEngine.on('$.ready', (data) => {
 
