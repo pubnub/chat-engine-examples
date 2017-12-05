@@ -16,7 +16,9 @@
     "react": "15.4.2",
     "react-dom": "15.4.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@angular/cli": "^1.5.5"
+  },
   "scripts": {
     "deploy": "surge --domain https://chat-engine-examples.surge.sh"
   },
