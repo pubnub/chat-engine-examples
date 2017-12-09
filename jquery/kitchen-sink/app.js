@@ -106,10 +106,11 @@ const renderUser = function($el, user) {
 
         // create a new chat with that channel
         let newChat = new ChatEngine.Chat(chan);
-        newChat.on('$.connected', () => {
+        newChat.once('$.connected', () => {
 
             // this fires a private invite to the user
             newChat.invite(user);
+
             renderChat(newChat);
 
         });
@@ -329,15 +330,11 @@ let username = window.location.hash.substr(1);
 // create a user for myself and store as ```me```
 ChatEngine.connect(username || new Date().getTime().toString(), {}, 'auth-key');
 
-ChatEngine.on('$.session.chat.join', (data) => {
-
-    if(data.chat.group == 'default') {
-        renderChat(data.chat);
-        data.chat.connect();
-    }
-});
-
 ChatEngine.on('$.ready', (data) => {
+
+    $('#refresh').click(() => {
+        ChatEngine.refreshAuth();
+    })
 
     me = data.me;
 
