@@ -1,3 +1,8 @@
+// Be sure to replace empty strings with your own App's Publish & Subscribe keys
+// otherwise the demo keys will be used.
+let userPubKey = '' || 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b';
+let userSubKey = '' || 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518';
+
 var generatePerson = function(online) {
 
     var person = {};
@@ -19,6 +24,11 @@ var generatePerson = function(online) {
 
     person.first = names[Math.floor(Math.random() * names.length)];
     person.last = names[Math.floor(Math.random() * names.length)];
+
+    if (!online) {
+        person.last = '(Simulated)';
+    }
+
     person.full = [person.first, person.last].join(" ");
     person.uuid = new Date().getTime();
 
@@ -44,9 +54,10 @@ var app = {
 
         // Make sure to import ChatEngine first!
         this.ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-            subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+            publishKey: userPubKey,
+            subscribeKey: userSubKey
         }, {
+            // this can make your broswer slooow
             debug: true,
             globalChannel: 'chat-engine-desktop-demo'
         });
@@ -60,8 +71,8 @@ var app = {
         this.ChatEngine.on('$.ready', function(data) {
             app.ready(data);
             app.simulateOfflineUsers();
-            app.bindUsers();
             app.bindMessages();
+            app.bindUsers();
         });
 
     },
@@ -81,6 +92,24 @@ var app = {
     ready: function(data) {
         this.me = data.me;
         this.chat = new this.ChatEngine.Chat('chatengine-meta');
+
+        // // uncomment code below to leverage PubNub's MSG History feature
+        // this.chat.on('$.connected', () => {
+        //
+        //     // search for 50 old `message` events
+        //     this.chat.search({
+        //       event: 'message',
+        //       limit: 50
+        //     }).on('message', (data) => {
+        //
+        //       // when messages are returned, render them like normal messages
+        //       console.debug(data);
+        //       app.renderMessage(data, true);
+        //
+        //     });
+        //
+        // });
+
         this.bindEvents();
     },
     cacheDOM: function() {
@@ -102,24 +131,27 @@ var app = {
         });
 
     },
+    // add PubNub - Presence to display users [online|offline] state
     bindUsers: function() {
 
-        this.chat.on('$.online.*', function(data) {
-            app.users.unshift(data.user);
-            app.renderUsers();
-        });
-
-        this.chat.on('$.offline.*', function(data) {
-
-            for (var i in app.users) {
-                if (app.users[i].uuid == data.user.uuid) {
-                    delete app.users[i];
-                }
-            }
-
-            app.renderUsers();
-
-        });
+        // // when a user comes online, render them in the online list
+        // this.chat.on('$.online.*', function(data) {
+        //     app.users.unshift(data.user);
+        //     app.renderUsers();
+        // });
+        //
+        // // when a user goes offline, remove them from the online list
+        // this.chat.on('$.offline.*', function(data) {
+        //
+        //     for (var i in app.users) {
+        //         if (app.users[i].uuid == data.user.uuid) {
+        //             delete app.users[i];
+        //         }
+        //     }
+        //
+        //     app.renderUsers();
+        //
+        // });
 
     },
     renderUsers: function() {
