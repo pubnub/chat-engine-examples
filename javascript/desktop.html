@@ -345,7 +345,10 @@
                     <div class="chat-with">ChatEngine Meta Chat</div>
                     <div class="chat-num-messages">902 messages</div>
                 </div>
-                <i class="fa fa-star"></i>
+                <div class="card-hearder">
+                    <span class = "batch badge-pill badge-success float-right" id="typing"></span>
+                </div>
+                <i class="fa fa-star float-right"></i>
             </div>
             <div class="chat-history">
                 <ul></ul>
@@ -371,7 +374,7 @@
                 <span class="message-data-name">{{user.first}}</span> <i class="fa fa-circle me"></i>
             </div>
             <div class="message other-message float-right">
-                {{messageOutput}}
+                {{{messageOutput}}}
             </div>
         </li>
     </script>
@@ -382,7 +385,7 @@
                 <span class="message-data-time">{{time}}, Today</span>
             </div>
             <div class="message my-message">
-                {{messageOutput}}
+                {{{messageOutput}}}
             </div>
         </li>
     </script>
@@ -400,6 +403,8 @@
         </li>
     </script>
     <script src="../node_modules/chat-engine/dist/chat-engine.js" type="text/javascript"></script>
+    <script src="../node_modules/chat-engine-typing-indicator/dist/chat-engine-typing-indicator.js" type="text/javascript"></script>
+    <script src="../node_modules/chat-engine-markdown/dist/chat-engine-markdown.js" type="text/javascript"></script>
     <script src="desktop.js" type="text/javascript"></script>
 </body>
 

@@ -93,24 +93,35 @@ var app = {
         this.me = data.me;
         this.chat = new this.ChatEngine.Chat('chatengine-meta');
 
-        // // uncomment code below to leverage PubNub's MSG History feature
-        // this.chat.on('$.connected', () => {
-        //
-        //     // search for 50 old `message` events
-        //     this.chat.search({
-        //       event: 'message',
-        //       limit: 50
-        //     }).on('message', (data) => {
-        //
-        //       // when messages are returned, render them like normal messages
-        //       console.debug(data);
-        //       app.renderMessage(data, true);
-        //
-        //     });
-        //
-        // });
+        // uncomment code below to leverage PubNub's MSG History feature
+        this.chat.on('$.connected', () => {
+
+            // search for 50 old `message` events
+            this.chat.search({
+                'reverse': true,
+                event: 'message',
+                limit: 50
+            }).on('message', (data) => {
+              // when messages are returned, render them like normal messages
+              app.renderMessage(data, true);
+
+            });
+
+        });
+
+        // ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-markdown']());
+
+        const markdown = ChatEngineCore.plugin['chat-engine-markdown']();
+        this.chat.plugin(markdown);
 
         this.bindEvents();
+
+        // add the typing indicator plugin
+        let config = { timeout: 2000 };
+        const typingIndicator = ChatEngineCore.plugin['chat-engine-typing-indicator'](config);
+        this.chat.plugin(typingIndicator);
+
+        this.renderUserTyping();
     },
     cacheDOM: function() {
         this.$chatHistory = $('.chat-history');
@@ -154,6 +165,17 @@ var app = {
         // });
 
     },
+    renderUserTyping: function() {
+
+        this.chat.on('$typingIndicator.stopTyping', (payload) => {
+            $('#typing').empty();
+        })
+
+        this.chat.on('$typingIndicator.startTyping', (payload) => {
+            console.debug(payload);
+            $('#typing').html(payload.sender.uuid + ' is typing...');
+        })
+    },
     renderUsers: function() {
 
         var peopleTemplate = Handlebars.compile($("#person-template").html());
@@ -166,7 +188,6 @@ var app = {
         });
 
     },
-
     renderMessage: function(message) {
 
         var meTemp = Handlebars.compile($("#message-template").html());
@@ -203,9 +224,12 @@ var app = {
 
     },
     sendMessageEnter: function(event) {
+
         // enter was pressed
         if (event.keyCode === 13) {
             this.sendMessage();
+        } else {
+            this.chat.typingIndicator.startTyping();
         }
     },
     scrollToBottom: function() {
