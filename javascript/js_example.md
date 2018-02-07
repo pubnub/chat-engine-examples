@@ -91,18 +91,32 @@ ready: function(data) {
           event: 'message',
           limit: 50
         }).on('message', (data) => {
-        
+
           // when messages are returned, render them like normal messages
           console.debug(data);
           app.renderMessage(data, true);
-        
+
         });
 
     });
-    
+
     this.bindEvents();
 },
 ```
 
-## Plugins22
+## Plugins
+CE provides many off the shelf plugins, in this example I'll provide you with the steps to add markdown rendering to your chat messages. Navigate to the `ready()` function and uncomment the following:
 
+```Javascript
+// UNCOMMENT code below to enbale the 'markdown-plugin'
+const markdown = ChatEngineCore.plugin['chat-engine-markdown']();
+this.chat.plugin(markdown);
+```
+
+Lastly, in order for Handlebars to properly render the rich HTML, enclose both instances of `messageOutput` within javascript/desktop.html with triple curly brackets. See example below:
+
+```HTML
+<div class="message other-message float-right">
+    {{{messageOutput}}}
+</div>
+```

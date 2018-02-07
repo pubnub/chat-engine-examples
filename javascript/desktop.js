@@ -110,8 +110,8 @@ var app = {
         // });
 
         // UNCOMMENT code below to enbale the 'markdown-plugin'
-        const markdown = ChatEngineCore.plugin['chat-engine-markdown']();
-        this.chat.plugin(markdown);
+        // const markdown = ChatEngineCore.plugin['chat-engine-markdown']();
+        // this.chat.plugin(markdown);
 
         this.bindEvents();
 
