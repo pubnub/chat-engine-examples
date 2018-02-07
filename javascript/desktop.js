@@ -93,24 +93,23 @@ var app = {
         this.me = data.me;
         this.chat = new this.ChatEngine.Chat('chatengine-meta');
 
-        // uncomment code below to leverage PubNub's MSG History feature
-        this.chat.on('$.connected', () => {
+        // UNCOMMENT code below to leverage PubNub's MSG History feature
+        // this.chat.on('$.connected', () => {
+        //
+        //     // search for 50 old `message` events
+        //     this.chat.search({
+        //         'reverse': true,
+        //         event: 'message',
+        //         limit: 50
+        //     }).on('message', (data) => {
+        //       // when messages are returned, render them like normal messages
+        //       app.renderMessage(data, true);
+        //
+        //     });
+        //
+        // });
 
-            // search for 50 old `message` events
-            this.chat.search({
-                'reverse': true,
-                event: 'message',
-                limit: 50
-            }).on('message', (data) => {
-              // when messages are returned, render them like normal messages
-              app.renderMessage(data, true);
-
-            });
-
-        });
-
-        // ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-markdown']());
-
+        // UNCOMMENT code below to enbale the 'markdown-plugin'
         const markdown = ChatEngineCore.plugin['chat-engine-markdown']();
         this.chat.plugin(markdown);
 
@@ -145,7 +144,8 @@ var app = {
     // add PubNub - Presence to display users [online|offline] state
     bindUsers: function() {
 
-        // // when a user comes online, render them in the online list
+        // UNCOMMENT the code below to leverage PubNub's Presence feature
+        // when a user comes online, render them in the online list
         // this.chat.on('$.online.*', function(data) {
         //     app.users.unshift(data.user);
         //     app.renderUsers();
