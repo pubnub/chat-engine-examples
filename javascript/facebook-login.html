@@ -66,7 +66,10 @@
     });
 
     function refresh() {
-        ChatEngine.reauthorize('new-auth-key' + new Date())
+
+        FB.login(function(response) {
+            ChatEngine.reauthorize(response.authResponse.accessToken);
+        }, { auth_type: 'reauthenticate' })
     }
 
     function checkLoginState() {
