@@ -3,8 +3,7 @@
 ## Quick Setup
 Great news! You're moments away from running your very own ChatEngine client.. In case you missed it, please ensure you have setup ChatEngine via PubNub's (Quick Start)[https://www.pubnub.com/docs/tutorials/chatengine] guide. Doing so will allow you to use your own PubNub application keyset.
 
-Ensure a static file server is running from the parent directory of the repo:
-
+Ensure a static file server is running from the parent directory of the repo.
 If not, instantiate a static HTTP server from the project root (either NodeJS or Python):
 
 ```bash
