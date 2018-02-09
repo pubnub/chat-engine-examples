@@ -73,9 +73,6 @@ export default (request, response) => {
         return xhr.fetch('https://graph.facebook.com/debug_token?access_token=305450936585628|d86681ec056638c4e80ee0921ea3bc34&input_token=' + authKey)
         .then((x) => x.json()).then((x) => {
 
-            console.log(x.data);
-            console.log(x.data.user_id)
-
             if(x.data.is_valid && x.data.user_id == uuid) {
                 resolve({uuid, authKey});
             } else {
@@ -120,8 +117,17 @@ export default (request, response) => {
 
         } else if (route === 'bootstrap') {
 
+            console.log('route is bootstrap', 'calling')
+
             return authPromise.then((data) => {
-                return db.set(['valid', data.uuid].join(':'), data.authKey);
+                console.log('setting',['valid', data.uuid].join(':'), 'as', data.authKey)
+                return db.set(['valid', data.uuid].join(':'), data.authKey).then((worked) => {
+                    console.log('it worked')
+                }).catch((err)=> {
+                    console.log(err)
+                });
+            }).catch((err) => {
+                console.log('there was a problem', err);
             });
 
         } else {
@@ -331,16 +337,11 @@ export default (request, response) => {
 
     };
 
-        console.log(route, method)
-
-
     // GET request with empty route returns the homepage
     // If a requested route or method for a route does not exist, return 404
     if (!route && method === 'get') {
         return controllers.index.get();
     } else if (controllers[route] && controllers[route][method]) {
-
-        console.log(route, method);
 
         return authPolicy().then(() => {
             return controllers[route][method]();
