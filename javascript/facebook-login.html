@@ -69,13 +69,16 @@
 
         FB.login(function(response) {
             ChatEngine.reauthorize(response.authResponse.accessToken);
-        }, { auth_type: 'reauthenticate' })
+        }, { auth_type: 'reauthenticate' });
+
     }
 
     function checkLoginState() {
+
         FB.getLoginStatus(function(response) {
             statusChangeCallback(response);
         });
+
     }
 
     function buildChatEngine(fbMe, fbAccessToken) {
