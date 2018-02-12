@@ -1,7 +1,10 @@
-// Be sure to replace empty strings with your own App's Publish & Subscribe keys
-// otherwise the demo keys will be used.
-let userPubKey = '' || 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b';
-let userSubKey = '' || 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518';
+// WARNING: PUBNUB KEYS REQUIRED FOR EXAMPLE TO FUNCTION
+const PUBLISH_KEY = '';
+const SUBSCRIBE_KEY = '';
+
+// just making sure you're paying attention
+if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
+    alert('You forgot to enter your keys');
 
 var generatePerson = function(online) {
 
@@ -54,8 +57,8 @@ var app = {
 
         // Make sure to import ChatEngine first!
         this.ChatEngine = ChatEngineCore.create({
-            publishKey: userPubKey,
-            subscribeKey: userSubKey
+            publishKey: PUBLISH_KEY,
+            subscribeKey: SUBSCRIBE_KEY
         }, {
             // this can make your broswer slooow
             debug: true,
