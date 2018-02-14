@@ -1,0 +1,18 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">ChatEngine</h4>
+    <p class="card-text">Your are <strong>{{ce.me.state.username}}</strong> with uuid {{ce.me.uuid}}</p>
+    <ul id="online-list" class="list-group list-group-flush">
+      <li class="list-group-item" *ngFor="let user of getUsers(ce.chat.users)">
+        <a href="" *ngIf="!user.hideWhileSearch" (click)="newChat(user)">{{user.state.username}}</a>
+      </li>
+    </ul>
+    <br/>
+    <div class="send-message">
+      <div class="input-group">
+        <input type="text" class="form-control message" (ngModelChange)="search()"
+               [(ngModel)]="mysearch" placeholder="Search for Username"/>
+      </div>
+    </div>
+  </div>
+</div>
