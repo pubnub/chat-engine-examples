@@ -27,7 +27,7 @@ export class AppChatComponent implements OnInit {
       payload.sameUser = this.messages.length > 0 && payload.sender.uuid === this.messages[this.messages.length - 1].sender.uuid;
 
       // if this message was sent by this client
-      payload.isSelf = payload.sender.uuid === this.ce.me.uuid;
+      payload.isSelf = payload.sender.name === 'Me';
 
       // add the message to the array
       this.messages.push(payload);
