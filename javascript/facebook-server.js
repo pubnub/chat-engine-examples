@@ -52,6 +52,7 @@ export default (request, response) => {
 
     let controllers = {
         index: {},
+        login: {},
         bootstrap: {},
         user_read: {},
         user_write: {},
@@ -65,23 +66,28 @@ export default (request, response) => {
         reset: {}
     };
 
-    let authPromise = new Promise((resolve, reject) => {
+    const authPolicy = () => {
 
-        let authKey = (method == 'get') ? request.params.authKey : body.authKey;
-        let uuid = (method == 'get') ? request.params.uuid : body.uuid;
+        return new Promise((resolve, reject) => {
 
-        return xhr.fetch('https://graph.facebook.com/debug_token?access_token=305450936585628|d86681ec056638c4e80ee0921ea3bc34&input_token=' + authKey)
-        .then((x) => x.json()).then((x) => {
+            return xhr.fetch('https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-38eb3fca-2310-11e8-84be-f641dd32cbde/chat-engine-auth', {
+                "body": JSON.stringify({
+                    "body": "Posting JSON!",
+                    "to": "Someone Special!"
+                })
+            }).then((response) => {
 
-            if(x.data.is_valid && x.data.user_id == uuid) {
-                resolve({uuid, authKey});
-            } else {
-                reject();
-            }
+                if(response.ok) {
+                    return resolve(response);
+                } else {
+                    return reject(response);
+                }
 
-        });
+            });
 
-    });
+        })
+
+    };
 
     // Response helpers
     let allow = () => {
@@ -97,47 +103,6 @@ export default (request, response) => {
     let serverError = (error) => {
         response.status = 500;
         return response.send(error);
-    };
-
-    let authPolicy = () => {
-
-        if (route === 'invite') {
-
-            return authPromise;
-
-            // can this user invite?
-            // return allow();
-
-        } else if (route === 'grant') {
-
-            // is this user allowed in the channel they're trying to join?
-            // return allow();
-
-            return authPromise;
-
-        } else if (route === 'bootstrap') {
-
-            console.log('route is bootstrap', 'calling')
-
-            return authPromise.then((data) => {
-                console.log('setting',['valid', data.uuid].join(':'), 'as', data.authKey)
-                return db.set(['valid', data.uuid].join(':'), data.authKey).then((worked) => {
-                    console.log('it worked')
-                }).catch((err)=> {
-                    console.log(err)
-                });
-            }).catch((err) => {
-                console.log('there was a problem', err);
-            });
-
-        } else {
-
-            // all other requests
-            // return allow();
-            return authPromise;
-
-        }
-
     };
 
     let handleStatus = (status) => {
@@ -191,6 +156,22 @@ export default (request, response) => {
         }).then(handleStatus).catch(handleError);
 
     };
+
+    controllers.login.post = () => {
+
+        return db.set(['valid', body.uuid].join(':'), body.authKey).then((worked) => {
+
+            response.status = 200;
+            return response.send('it worked');
+
+        }).catch((err) => {
+
+            response.status = 401;
+            return response.send('it did not work');
+
+        });
+
+    }
 
     controllers.bootstrap.post = () => {
 
@@ -342,6 +323,8 @@ export default (request, response) => {
     if (!route && method === 'get') {
         return controllers.index.get();
     } else if (controllers[route] && controllers[route][method]) {
+
+        console.log('try route');
 
         return authPolicy().then(() => {
             return controllers[route][method]();
