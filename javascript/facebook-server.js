@@ -18,7 +18,8 @@ export default (request, response) => {
     const route = request.params.route;
     const method = request.method.toLowerCase();
 
-    const body = JSON.parse(request.body);
+    request.body = JSON.parse(request.body);
+    const body = request.body;
 
     function quote(s) {
         return encodeURIComponent(s).replace(/[!~*'()]/g, c => `%${c.charCodeAt(0).toString(16)}`);
@@ -64,29 +65,6 @@ export default (request, response) => {
         leave: {},
         invite: {},
         reset: {}
-    };
-
-    const authPolicy = () => {
-
-        return new Promise((resolve, reject) => {
-
-            return xhr.fetch('https://pubsub.pubnub.com/v1/blocks/sub-key/sub-c-38eb3fca-2310-11e8-84be-f641dd32cbde/chat-engine-auth', {
-                "body": JSON.stringify({
-                    "body": "Posting JSON!",
-                    "to": "Someone Special!"
-                })
-            }).then((response) => {
-
-                if(response.ok) {
-                    return resolve(response);
-                } else {
-                    return reject(response);
-                }
-
-            });
-
-        })
-
     };
 
     // Response helpers
@@ -313,10 +291,46 @@ export default (request, response) => {
             return response.send(state || {});
         }).catch(() => {
             response.status = 500;
-            return response.send();
+            return request.abort();
         });
 
     };
+
+
+    let authPolicy = () => {
+
+        return new Promise((resolve, reject) => {
+
+            const httpOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(request)
+            };
+
+            const url = `https://pubsub.pubnub.com/v1/blocks/sub-key/${request.subkey}/chat-engine-policy`;
+
+            return xhr.fetch(url, httpOptions).then((res) => {
+                if (res.status === 200) {
+                    return resolve(res);
+                } else {
+
+                    console.log('reject fomr xhr')
+
+
+                    return reject(res);
+                }
+            }).catch((err) => {
+
+                console.log('error from xhr')
+
+                return reject(err);
+            });
+
+        });
+
+    }
 
     // GET request with empty route returns the homepage
     // If a requested route or method for a route does not exist, return 404
@@ -324,12 +338,19 @@ export default (request, response) => {
         return controllers.index.get();
     } else if (controllers[route] && controllers[route][method]) {
 
-        console.log('try route');
+        return authPolicy().then((res) => {
 
-        return authPolicy().then(() => {
-            return controllers[route][method]();
-        }).catch(() => {
-            response.status = 401;
+            let b = JSON.parse(res.body);
+
+            if(b.allow) {
+                return controllers[route][method]();
+            } else {
+                response.status = 401;
+                return response.send(res.body);
+            }
+
+        }).catch((res) => {
+            response.status = 200;
             return response.send();
         });
 
