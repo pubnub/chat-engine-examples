@@ -309,22 +309,21 @@ export default (request, response) => {
                 body: JSON.stringify(request)
             };
 
-            const url = `https://pubsub.pubnub.com/v1/blocks/sub-key/${request.subkey}/chat-engine-policy`;
+            const url = `https://pubsub.pubnub.com/v1/blocks/sub-key/${request.subkey}/chat-engine-gateway`;
+
+            console.log(url)
 
             return xhr.fetch(url, httpOptions).then((res) => {
                 if (res.status === 200) {
                     return resolve(res);
                 } else {
-
-                    console.log('reject fomr xhr')
-
-
+                    console.log('reject fomr xhr');
+                    console.log(res)
                     return reject(res);
                 }
             }).catch((err) => {
-
-                console.log('error from xhr')
-
+                console.log('error from xhr');
+                console.log(err);
                 return reject(err);
             });
 
@@ -340,7 +339,16 @@ export default (request, response) => {
 
         return authPolicy().then((res) => {
 
-            let b = JSON.parse(res.body);
+            console.log(res)
+
+            let b = {allow: false};
+
+            try {
+                b = JSON.parse(res.body);
+            } catch(err) {
+                response.status = 500;
+                return response.send('could not parse auth json');
+            }
 
             if(b.allow) {
                 return controllers[route][method]();
@@ -358,4 +366,5 @@ export default (request, response) => {
         response.status = 404;
         return response.send();
     }
+
 };

@@ -33,7 +33,7 @@
 
         let me = data.me;
 
-        FB.api("/" + data.me.state.id + "/picture", function(response) {
+        FB.api("/" + data.me.state.id + "/picture?redirect=false", function(response) {
 
             if (response && !response.error) {
 
@@ -82,12 +82,7 @@
     }
 
     function buildChatEngine(fbMe, fbAccessToken) {
-
-        console.log(fbAccessToken)
-
         ChatEngine.connect(fbMe.id, fbMe, fbAccessToken);
-        // ChatEngine.connect(fbMe.id, fbMe);
-
     };
 
     function startUp(auth) {
