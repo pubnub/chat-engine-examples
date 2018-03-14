@@ -54,9 +54,6 @@ export default (request, response) => {
             return xhr.fetch(url)
             .then((x) => x.json()).then((x) => {
 
-                console.log(x.age_range.min)
-                console.log(minAge)
-
                 if(x.age_range.min > minAge) {
                     return resolve({
                         allow: true,
