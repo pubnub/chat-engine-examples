@@ -64,7 +64,8 @@ export default (request, response) => {
         join: {},
         leave: {},
         invite: {},
-        reset: {}
+        reset: {},
+        validate: {}
     };
 
     // Response helpers
@@ -86,7 +87,7 @@ export default (request, response) => {
     let handleStatus = (status) => {
 
         if (!status.message || status.message !== 'Success') {
-            console.log('PAM Issue: ', status.message);
+            // console.log('PAM Issue: ', status.message);
             response.status = 500;
             return response.send('Internal Server Error');
         } else {
@@ -96,7 +97,7 @@ export default (request, response) => {
     };
 
     let handleError = (err) => {
-        console.log('PAM Error: ', err);
+        // console.log('PAM Error: ', err);
         response.status = 500;
         return response.send('Internal Server Error');
     };
@@ -208,7 +209,6 @@ export default (request, response) => {
 
     };
 
-
     controllers.leave.post = () => {
 
         let group = encodeURIComponent([body.global, body.uuid, body.chat.group].join('#'));
@@ -296,6 +296,48 @@ export default (request, response) => {
 
     };
 
+    let validateToken = (uuid, authKey) => {
+
+        let key = ['valid', uuid].join(':');
+
+        return new Promise((resolve, reject) => {
+
+            return db.get(key).then((dbKey) => {
+
+                if(authKey === dbKey) {
+                    return resolve();
+                }  else {
+                    return reject();
+                }
+
+            }).catch((err) => {
+                return reject();
+            });
+
+        });
+
+    }
+
+    controllers.validate.get = () => {
+
+      return validateToken(req.params.uuid, req.params.authKey).then(() => {
+
+        response.status = 200;
+        return response.send({
+            allow: true
+        });
+
+      }).catch(() => {
+
+        response.status = 200;
+        return response.send({
+            allow: false,
+            text: 'Your authToken is not valid'
+        });
+
+      })
+
+    };
 
     let authPolicy = () => {
 
@@ -311,19 +353,15 @@ export default (request, response) => {
 
             const url = `https://pubsub.pubnub.com/v1/blocks/sub-key/${request.subkey}/chat-engine-gateway`;
 
-            console.log(url)
-
             return xhr.fetch(url, httpOptions).then((res) => {
+
                 if (res.status === 200) {
                     return resolve(res);
                 } else {
-                    console.log('reject fomr xhr');
-                    console.log(res)
                     return reject(res);
                 }
+
             }).catch((err) => {
-                console.log('error from xhr');
-                console.log(err);
                 return reject(err);
             });
 
@@ -331,15 +369,13 @@ export default (request, response) => {
 
     }
 
-    // GET request with empty route returns the homepage
-    // If a requested route or method for a route does not exist, return 404
-    if (!route && method === 'get') {
-        return controllers.index.get();
-    } else if (controllers[route] && controllers[route][method]) {
+    let requestRouter = () => {
+
+        // console.log('router running policy')
 
         return authPolicy().then((res) => {
 
-            console.log(res)
+            // console.log('authpolicy response', res.body)
 
             let b = {allow: false};
 
@@ -361,6 +397,34 @@ export default (request, response) => {
             response.status = 200;
             return response.send();
         });
+
+    }
+
+    // GET request with empty route returns the homepage
+    // If a requested route or method for a route does not exist, return 404
+    if (!route && method === 'get') {
+        return controllers.index.get();
+    } else if (controllers[route] && controllers[route][method]) {
+
+        if(route !== 'login') {
+
+            return validateToken(body && body.uuid || request.params.uuid, body && body.authKey || request.params.authKey).then(() => {
+
+                return requestRouter();
+
+            }).catch((err) => {
+
+                console.log('problem in validate token');
+
+                response.status = 500;
+                return response.send();
+
+            });
+
+        } else {
+            // console.log('going to router')
+            return requestRouter();
+        }
 
     } else {
         response.status = 404;

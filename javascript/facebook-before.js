@@ -2,35 +2,28 @@ export default (request, response) => {
 
     const db = require('kvstore');
 
-    if(request.channels[0].indexOf('chat-engine#') === 0) {
+    console.log('request made');
 
-        console.log('need to be authed to do that');
+    if(request.channels[0].indexOf('ce#') === 0) {
 
-        console.log(request)
+        const url = `https://pubsub.pubnub.com/v1/blocks/sub-key/${request.subkey}/chat-engine-server?route=validate&uuid=${request.message.params.uuid}&authKey=${request.message.params.auth}`;
 
-        let key = ['valid', request.message.sender].join(':');
+        return xhr.fetch(url, httpOptions).then((res) => {
 
+            console.log(res);
 
-        return db.get(key).then((dbKey) => {
-
-            console.log('db get response', key, request.params.auth, dbKey, request.params.auth == dbKey)
-
-            if(request.params.auth === dbKey) {
-
-                console.log('you are currently authed!');
-
-                return request.ok();
-            }  else {
-                return request.abort();
+            if (res.status === 200) {
+                return resolve(res);
+            } else {
+                return reject(res);
             }
 
         }).catch((err) => {
-            return request.abort();
+            return reject(err);
         });
 
-    } else {
-        console.log('this is not require auth')
-        return request.ok();
     }
+
+    return request.ok();
 
 };
