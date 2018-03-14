@@ -33,7 +33,7 @@
 
         let me = data.me;
 
-        FB.api("/" + data.me.state().id + "/picture", function(response) {
+        FB.api("/" + data.me.state.id + "/picture?redirect=false", function(response) {
 
             if (response && !response.error) {
 
@@ -59,7 +59,7 @@
 
         ChatEngine.global.on('message', (payload) => {
 
-            $('#chat').append($('<p><img src="' + payload.sender.state().avatar + '" style="border-radius: 50%; width: 20px; height: 20px; display: inline-block;"/> <strong>' + payload.sender.state().name + ':</strong> ' + payload.data.text + '</p>'));
+            $('#chat').append($('<p><img src="' + payload.sender.state.avatar + '" style="border-radius: 50%; width: 20px; height: 20px; display: inline-block;"/> <strong>' + payload.sender.state.name + ':</strong> ' + payload.data.text + '</p>'));
 
         });
 
