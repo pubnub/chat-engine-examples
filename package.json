@@ -4,7 +4,7 @@
   "description": "Examples of ChatEngine for a ton of frameworks",
   "main": "index.html",
   "dependencies": {
-    "chat-engine": "0.8.4",
+    "chat-engine": "^0.8.4",
     "chat-engine-desktop-notifications": "0.0.x",
     "chat-engine-emoji": "0.0.x",
     "chat-engine-markdown": "0.0.x",
