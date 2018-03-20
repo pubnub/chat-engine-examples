@@ -22,14 +22,14 @@ export default (request, response) => {
 
     let validateFBToken = (uuid, authKey, authData) => {
 
-        // console.log('running validate token')
-
         return new Promise((resolve, reject) => {
 
             return xhr.fetch(`https://graph.facebook.com/debug_token?access_token=${myFBToken}|${myFBSecret}&input_token=${authKey}`)
             .then((x) => x.json()).then((x) => {
 
                 if(x.data.is_valid && x.data.user_id == uuid) {
+
+                    console.log('fb was able to validate');
 
                     resolve({
                         allow: true
@@ -57,6 +57,14 @@ export default (request, response) => {
             let url = `https://graph.facebook.com/${uuid}?&access_token=${authKey}&fields=age_range`;
 
             return xhr.fetch(url)
+            .catch(() =>{
+
+                return resolve({
+                    allow: false,
+                    text: 'Facebook says this is an invalid token'
+                });
+
+            })
             .then((x) => x.json()).then((x) => {
 
                 if(x.age_range.min > minAge) {

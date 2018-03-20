@@ -10,9 +10,10 @@ export default (request, response) => {
 
         return xhr.fetch(url, httpOptions).then((res) => {
 
-            console.log(res);
-
             if (res.status === 200) {
+
+                console.log('validate route says were ok');
+
                 return resolve(res);
             } else {
                 return reject(res);
