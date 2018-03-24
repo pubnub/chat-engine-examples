@@ -210,7 +210,7 @@ var app = {
             template = meTemp;
         }
 
-        // Converts PubNub timetoken to JS date time. ChatEngine 9+ only.
+        // Converts PubNub timetoken to JS date time. ChatEngine 0.9+ only.
         var messageJsTime = new Date(parseInt(message.timetoken.substring(0,13)));
 
         var context = {
