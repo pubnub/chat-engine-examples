@@ -3,6 +3,15 @@
 let userPubKey = '' || 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b';
 let userSubKey = '' || 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518';
 
+// Make a jQuery sort for the chat log based on message timetoken (tt)
+jQuery.fn.sortDomElements = (function() {
+    return function(comparator) {
+        return Array.prototype.sort.call(this, comparator).each(function(i) {
+              this.parentNode.appendChild(this);
+        });
+    };
+})();
+
 var generatePerson = function(online) {
 
     var person = {};
@@ -93,9 +102,14 @@ var app = {
         this.me = data.me;
         this.chat = new this.ChatEngine.Chat('chatengine-meta');
 
-        // UNCOMMENT code below to leverage PubNub's MSG History feature
+        //// UNCOMMENT code below to enbale the 'markdown-plugin'
+        //// also the `.plugin(markdown);` line chained to `this.chat.search`
+        // const markdown = ChatEngineCore.plugin['chat-engine-markdown']();
+        // this.chat.plugin(markdown);
+
+        // // UNCOMMENT code below to leverage PubNub's MSG History feature
         // this.chat.on('$.connected', () => {
-        //
+        
         //     // search for 50 old `message` events
         //     this.chat.search({
         //         'reverse': true,
@@ -104,14 +118,11 @@ var app = {
         //     }).on('message', (data) => {
         //       // when messages are returned, render them like normal messages
         //       app.renderMessage(data, true);
-        //
-        //     });
-        //
+        
+        //     })
+        //     //.plugin(markdown);
+        
         // });
-
-        // UNCOMMENT code below to enbale the 'markdown-plugin'
-        // const markdown = ChatEngineCore.plugin['chat-engine-markdown']();
-        // this.chat.plugin(markdown);
 
         this.bindEvents();
 
@@ -144,24 +155,24 @@ var app = {
     // add PubNub - Presence to display users [online|offline] state
     bindUsers: function() {
 
-        // UNCOMMENT the code below to leverage PubNub's Presence feature
-        // when a user comes online, render them in the online list
+        //// UNCOMMENT the code below to leverage PubNub's Presence feature
+        //// when a user comes online, render them in the online list
         // this.chat.on('$.online.*', function(data) {
         //     app.users.unshift(data.user);
         //     app.renderUsers();
         // });
-        //
-        // // when a user goes offline, remove them from the online list
+        
+        //// when a user goes offline, remove them from the online list
         // this.chat.on('$.offline.*', function(data) {
-        //
+        
         //     for (var i in app.users) {
         //         if (app.users[i].uuid == data.user.uuid) {
         //             delete app.users[i];
         //         }
         //     }
-        //
+        
         //     app.renderUsers();
-        //
+        
         // });
 
     },
@@ -199,13 +210,28 @@ var app = {
             template = meTemp;
         }
 
+        // Converts PubNub timetoken to JS date time. ChatEngine 9+ only.
+        var messageJsTime = new Date(parseInt(message.timetoken.substring(0,13)));
+
         var context = {
             messageOutput: message.data.text,
-            time: app.getCurrentTime(),
+            tt: messageJsTime.getTime(),
+            time: app.parseTime(messageJsTime),
             user: message.sender.state
         };
 
         app.$chatHistoryList.append(template(context));
+
+        // Sort messages in chat log based on their timetoken (tt)
+        app.$chatHistoryList
+        .children()
+        .sortDomElements(function(a,b){
+            akey = a.dataset.order;
+            bkey = b.dataset.order;
+            if (akey == bkey) return 0;
+            if (akey < bkey) return -1;
+            if (akey > bkey) return 1;
+        });
 
         this.scrollToBottom();
 
@@ -234,6 +260,10 @@ var app = {
     },
     scrollToBottom: function() {
         this.$chatHistory.scrollTop(this.$chatHistory[0].scrollHeight);
+    },
+    parseTime: function(time) {
+        return time.toLocaleDateString() + ", " + time.toLocaleTimeString().
+        replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
     },
     getCurrentTime: function() {
         return new Date().toLocaleTimeString().
