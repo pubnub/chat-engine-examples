@@ -1,1 +1,0 @@
-{"version":3,"sources":["index.css"],"names":[],"mappings":"AAAA,EACI,SACA,SAAa,CAEjB,KACI,YACA,iBACA,qBAAuB","file":"static/css/main.ea890535.css","sourcesContent":["* {\n    margin: 0px;\n    padding: 0px;\n}\nbody {\n    width: 500px;\n    margin: 30px auto;\n    background-color: #fff;\n}\n\n\n\n// WEBPACK FOOTER //\n// ./src/index.css"],"sourceRoot":""}
