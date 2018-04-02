@@ -19,7 +19,7 @@ const ChatEngine = ChatEngineCore.create({
 
 ChatEngine.connect(username, {
     signedOnTime: now
-}, 'auth-key');
+});
 
 let Message = createReactClass({
     render: function() {
@@ -36,6 +36,9 @@ let Message = createReactClass({
 let Chat = createReactClass({
 
     getInitialState: function() {
+
+        this.chat = new ChatEngine.Chat('my-new-chat');
+
         return {
             messages: [],
             chatInput: ''
@@ -50,7 +53,7 @@ let Chat = createReactClass({
 
         if (this.state.chatInput) {
 
-            ChatEngine.global.emit('message', {
+            this.chat.emit('message', {
                 text: this.state.chatInput
             });
 
@@ -62,7 +65,7 @@ let Chat = createReactClass({
 
     componentDidMount: function() {
 
-        ChatEngine.global.on('message', (payload) => {
+        this.chat.on('message', (payload) => {
 
             let messages = this.state.messages;
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "chat-engine": "^0.9.7",
+    "chat-engine": "^0.9.9",
     "create-react-class": "^15.6.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
