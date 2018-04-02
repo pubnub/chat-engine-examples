@@ -1,24 +1,31 @@
+import registerServiceWorker from './registerServiceWorker';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import ChatEngineCore from 'chat-engine'
+import createReactClass from 'create-react-class'
+
+registerServiceWorker();
 
 const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+    publishKey: 'pub-c-df1f983b-8334-44aa-b32b-2fa23eff1f8f',
+    subscribeKey: 'sub-c-bf3164ba-f737-11e7-b8a6-46d99af2bb8c'
 }, {
     globalChannel: 'chat-engine-react'
 });
 
 ChatEngine.connect(username, {
     signedOnTime: now
-}, 'auth-key');
+});
 
-var Message = React.createClass({
+let Message = createReactClass({
     render: function() {
+
+        console.log('mes', this.props)
+
         return ( <
             div > { this.props.uuid }: { this.props.text } <
             /div>
@@ -26,9 +33,12 @@ var Message = React.createClass({
     }
 });
 
-var Chat = React.createClass({
+let Chat = createReactClass({
 
     getInitialState: function() {
+
+        this.chat = new ChatEngine.Chat('my-new-chat');
+
         return {
             messages: [],
             chatInput: ''
@@ -43,7 +53,7 @@ var Chat = React.createClass({
 
         if (this.state.chatInput) {
 
-            ChatEngine.global.emit('message', {
+            this.chat.emit('message', {
                 text: this.state.chatInput
             });
 
@@ -55,18 +65,13 @@ var Chat = React.createClass({
 
     componentDidMount: function() {
 
-        ChatEngine.global.on('message', (payload) => {
+        this.chat.on('message', (payload) => {
 
             let messages = this.state.messages;
 
-            messages.push( <
-                Message key = { this.state.messages.length } uuid = { payload.sender.uuid } text = { payload.data.text }
-                />
-            );
+            messages.push(payload);
 
-            this.setState({
-                messages: messages
-            });
+            this.setState({messages});
 
         });
 
@@ -79,10 +84,18 @@ var Chat = React.createClass({
     },
 
     render: function() {
+
+        console.log('render called')
+
+        console.log(this.state.messages)
+
+        let messageList = this.state.messages.map(function(payload){
+            return <Message key={payload.timetoken} uuid={payload.sender.uuid} text={payload.data.text} />
+        });
+
         return ( <
             div >
-            <
-            div id = "chat-output" > { this.state.messages } < /div> <
+            <div id = "chat-output" > { messageList } < /div> <
             input id = "chat-input"
             type = "text"
             name = ""
