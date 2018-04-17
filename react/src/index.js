@@ -17,16 +17,17 @@ ChatEngine.connect(username, {
     signedOnTime: now
 }, 'auth-key');
 
-var Message = React.createClass({
-    render: function() {
+class Message extends React.Component{
+    render () {
         return ( <
             div > { this.props.uuid }: { this.props.text } <
             /div>
         );
     }
-});
+};
 
-var Chat = React.createClass({
+var createReactClass = require('create-react-class');
+var Chat = createReactClass({
 
     getInitialState: function() {
         return {
@@ -60,7 +61,7 @@ var Chat = React.createClass({
             let messages = this.state.messages;
 
             messages.push( <
-                Message key = { this.state.messages.length } uuid = { payload.sender.uuid } text = { payload.data.text }
+                Message key={ this.state.messages.length } uuid={ payload.sender.uuid } text={ payload.data.text }
                 />
             );
 
@@ -82,14 +83,14 @@ var Chat = React.createClass({
         return ( <
             div >
             <
-            div id = "chat-output" > { this.state.messages } < /div> <
-            input id = "chat-input"
-            type = "text"
-            name = ""
-            value = { this.state.chatInput } onChange = { this.setChatInput } onKeyPress = { this._handleKeyPress }
+            div id="chat-output" > { this.state.messages } < /div> <
+            input id="chat-input"
+            type="text"
+            name=""
+            value={ this.state.chatInput } onChange={ this.setChatInput } onKeyPress={ this._handleKeyPress }
             /> <
-            input type = "button"
-            onClick = { this.sendChat } value = "Send Chat" / >
+            input type="button"
+            onClick={ this.sendChat } value="Send Chat" / >
             <
             /div>
         );
