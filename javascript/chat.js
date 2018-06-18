@@ -6,30 +6,21 @@ const textOutput = document.getElementById('chat-output');
 let sendChat = function() {}; // will be filled in when ChatEngine connects
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+    publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+    subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
 }, {
-    globalChannel: 'chat-engine-demo-js',
     debug: true
 });
 
-ChatEngine.onAny((a) => {
-    // console.log(a)
-});
-
-ChatEngine.connect(username, {
-    signedOnTime: now
-}, 'auth-key' + new Date().getTime());
+ChatEngine.connect(username, 'auth-key' + new Date().getTime());
 
 ChatEngine.on('$.ready', (data) => {
 
-    data.me.direct.onAny((a) => {
-        console.log(a)
-    })
+    let myChat = new ChatEngine.Chat();
 
     sendChat = function(e) {
 
-        ChatEngine.global.emit('message', {
+        myChat.emit('message', {
             text: textInput.value
         });
 
@@ -42,11 +33,11 @@ ChatEngine.on('$.ready', (data) => {
     checkSubmit = function(e) {
 
         if (e.keyCode == 13) {
-            sendChat();
+            sendchat();
         }
     }
 
-    ChatEngine.global.on('message', (payload) => {
+    myChat.on('message', (payload) => {
 
         let div = document.createElement("p");
         div.innerHTML = payload.sender.uuid + ': ' + payload.data.text;
