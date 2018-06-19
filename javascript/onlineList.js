@@ -4,18 +4,19 @@ const username = ['user', now].join('-');
 const onlineOutput = document.getElementById('online-list');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+    publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+    subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
 }, {
-    debug: true,
-    globalChannel: 'chat-engine-online-example'
+    debug: true
 });
 
 ChatEngine.on('$.ready', () => {
 
     let onlineEvents = 0;
 
-    ChatEngine.global.on('$.online.*', (payload) => {
+    let newChat = new ChatEngine.Chat('online-list-example');
+
+    newChat.on('$.online.*', (payload) => {
 
         let div = document.createElement("li");
         div.innerHTML = payload.user.uuid;
@@ -27,11 +28,9 @@ ChatEngine.on('$.ready', () => {
     });
 
     setInterval(function() {
-        console.log('users online', ChatEngine.global.users);
+        console.log('users online', newChat.users);
     }, 1000);
 
 });
 
-ChatEngine.connect(username, {
-    signedOnTime: now
-}, 'auth-key');
+ChatEngine.connect(username, 'auth-key');
