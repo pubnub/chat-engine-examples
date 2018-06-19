@@ -19,25 +19,27 @@
 
 <body>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="../node_modules/chat-engine/dist/chat-engine.js" type="text/javascript"></script>
+    <script src="../../../chat-engine/dist/chat-engine.js" type="text/javascript"></script>
     <script type="text/javascript">
     const ChatEngine = ChatEngineCore.create({
-        publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-        subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+        publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+        subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
     }, {
         debug: true,
-        globalChannel: 'chat-engine-demo-facebook'
+        namespace: 'fb'
     });
 
     ChatEngine.on('$.ready', (data) => {
 
         let me = data.me;
 
+        let fbChat = new ChatEngine.Chat('facebook-chat');
+
         FB.api("/" + data.me.state.id + "/picture?redirect=false", function(response) {
 
             if (response && !response.error) {
 
-                me.update({
+                me.update(fbChat, {
                     avatar: response.data.url
                 });
 
@@ -47,7 +49,7 @@
 
         $('#chat-input').submit(() => {
 
-            ChatEngine.global.emit('message', {
+            fbChat.emit('message', {
                 text: $('#message').val()
             });
 
@@ -57,9 +59,13 @@
 
         });
 
-        ChatEngine.global.on('message', (payload) => {
+        fbChat.on('message', (payload) => {
 
-            $('#chat').append($('<p><img src="' + payload.sender.state.avatar + '" style="border-radius: 50%; width: 20px; height: 20px; display: inline-block;"/> <strong>' + payload.sender.state.name + ':</strong> ' + payload.data.text + '</p>'));
+            console.log(payload.sender);
+
+            let userProfile = payload.sender.state(fbChat);
+
+            $('#chat').append($('<p><img src="' + userProfile.avatar + '" style="border-radius: 50%; width: 20px; height: 20px; display: inline-block;"/> <strong>' + payload.userProfile.name + ':</strong> ' + userProfile.text + '</p>'));
 
         });
 
@@ -73,7 +79,8 @@
 
     function buildChatEngine(fbMe, fbAccessToken) {
 
-        ChatEngine.connect(fbMe.id, fbMe, fbAccessToken);
+        ChatEngine.connect('tester')
+        // ChatEngine.connect(fbMe.id, fbAccessToken);
         // ChatEngine.connect(fbMe.id, fbMe);
 
     };
