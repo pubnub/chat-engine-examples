@@ -90,7 +90,8 @@ var app = {
         for (var j = 3; j > 0; j--) {
             var tempPerson = generatePerson(false);
 
-            var ceTemp = new this.ChatEngine.User(tempPerson.uuid, tempPerson);
+            var ceTemp = new this.ChatEngine.User(tempPerson.uuid);
+            ceTemp.update(this.chat, tempPerson)
 
             this.users.push(ceTemp)
         }
@@ -99,8 +100,12 @@ var app = {
 
     },
     ready: function(data) {
-        this.me = data.me;
+
         this.chat = new this.ChatEngine.Chat('chatengine-meta');
+
+        console.log(data.me)
+
+        // data.me.update(this.chat, newPerson);
 
         //// UNCOMMENT code below to enbale the 'markdown-plugin'
         //// also the `.plugin(markdown);` line chained to `this.chat.search`
@@ -195,7 +200,7 @@ var app = {
         $('#people-list ul').empty();
         this.users.forEach(function(user) {
 
-            $('#people-list ul').append(peopleTemplate(user.state));
+            $('#people-list ul').append(peopleTemplate(user.state(this.chat)));
         });
 
     },
@@ -213,11 +218,13 @@ var app = {
         // Converts PubNub timetoken to JS date time. ChatEngine 0.9+ only.
         var messageJsTime = new Date(parseInt(message.timetoken.substring(0,13)));
 
+        console.log(this.chat)
+
         var context = {
             messageOutput: message.data.text,
             tt: messageJsTime.getTime(),
             time: app.parseTime(messageJsTime),
-            user: message.sender.state
+            user: message.sender.state(this.chat)
         };
 
         app.$chatHistoryList.append(template(context));
