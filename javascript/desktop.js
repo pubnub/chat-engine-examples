@@ -1,7 +1,7 @@
 // Be sure to replace empty strings with your own App's Publish & Subscribe keys
 // otherwise the demo keys will be used.
-let userPubKey = '' || 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b';
-let userSubKey = '' || 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518';
+let userPubKey = 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7';
+let userSubKey = 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395';
 
 // Make a jQuery sort for the chat log based on message timetoken (tt)
 jQuery.fn.sortDomElements = (function() {
@@ -68,12 +68,12 @@ var app = {
         }, {
             // this can make your broswer slooow
             debug: true,
-            globalChannel: 'chat-engine-desktop-demo'
+            namspace: 'chat-engine-desktop-demo'
         });
 
         let newPerson = generatePerson(true);
 
-        this.ChatEngine.connect(newPerson.uuid, newPerson);
+        this.ChatEngine.connect(newPerson.uuid);
 
         this.cacheDOM();
 
@@ -109,7 +109,7 @@ var app = {
 
         // // UNCOMMENT code below to leverage PubNub's MSG History feature
         // this.chat.on('$.connected', () => {
-        
+
         //     // search for 50 old `message` events
         //     this.chat.search({
         //         'reverse': true,
@@ -118,10 +118,10 @@ var app = {
         //     }).on('message', (data) => {
         //       // when messages are returned, render them like normal messages
         //       app.renderMessage(data, true);
-        
+
         //     })
         //     //.plugin(markdown);
-        
+
         // });
 
         this.bindEvents();
@@ -161,18 +161,18 @@ var app = {
         //     app.users.unshift(data.user);
         //     app.renderUsers();
         // });
-        
+
         //// when a user goes offline, remove them from the online list
         // this.chat.on('$.offline.*', function(data) {
-        
+
         //     for (var i in app.users) {
         //         if (app.users[i].uuid == data.user.uuid) {
         //             delete app.users[i];
         //         }
         //     }
-        
+
         //     app.renderUsers();
-        
+
         // });
 
     },
