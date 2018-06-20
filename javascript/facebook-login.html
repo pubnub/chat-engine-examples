@@ -29,17 +29,21 @@
         namespace: 'fb'
     });
 
+    let fbMe;
+
     ChatEngine.on('$.ready', (data) => {
 
         let me = data.me;
 
         let fbChat = new ChatEngine.Chat('facebook-chat');
 
-        FB.api("/" + data.me.state.id + "/picture?redirect=false", function(response) {
+        fbChat.setState(fbMe);
+
+        FB.api("/" + me.uuid + "/picture?redirect=false", function(response) {
 
             if (response && !response.error) {
 
-                me.update(fbChat, {
+                fbChat.setState({
                     avatar: response.data.url
                 });
 
@@ -61,11 +65,11 @@
 
         fbChat.on('message', (payload) => {
 
-            console.log(payload.sender);
+            console.log(payload)
 
             let userProfile = payload.sender.state(fbChat);
 
-            $('#chat').append($('<p><img src="' + userProfile.avatar + '" style="border-radius: 50%; width: 20px; height: 20px; display: inline-block;"/> <strong>' + payload.userProfile.name + ':</strong> ' + userProfile.text + '</p>'));
+            $('#chat').append($('<p><img src="' + userProfile.avatar + '" style="border-radius: 50%; width: 20px; height: 20px; display: inline-block;"/> <strong>' + userProfile.name + ':</strong> ' + payload.data.text + '</p>'));
 
         });
 
@@ -77,10 +81,10 @@
         });
     }
 
-    function buildChatEngine(fbMe, fbAccessToken) {
+    function buildChatEngine(uuid, fbAccessToken) {
 
-        ChatEngine.connect('tester')
-        // ChatEngine.connect(fbMe.id, fbAccessToken);
+       // ChatEngine.connect('tester')
+        ChatEngine.connect(uuid, fbAccessToken);
         // ChatEngine.connect(fbMe.id, fbMe);
 
     };
@@ -93,7 +97,9 @@
             document.getElementById('status').innerHTML =
                 'Logged in as ' + response.name + '!';
 
-            buildChatEngine(response, auth.authResponse.accessToken);
+            fbMe = response;
+
+            buildChatEngine(fbMe.id, auth.authResponse.accessToken);
 
         });
 

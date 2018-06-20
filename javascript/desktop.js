@@ -67,8 +67,8 @@ var app = {
             subscribeKey: userSubKey
         }, {
             // this can make your broswer slooow
-            debug: true,
-            namspace: 'chat-engine-desktop-demo'
+            debug: false,
+            namspace: 'ce-desktop'
         });
 
         let newPerson = generatePerson(true);
@@ -88,12 +88,18 @@ var app = {
     simulateOfflineUsers: function() {
 
         for (var j = 3; j > 0; j--) {
+
             var tempPerson = generatePerson(false);
 
             var ceTemp = new this.ChatEngine.User(tempPerson.uuid);
             ceTemp.update(this.chat, tempPerson)
 
-            this.users.push(ceTemp)
+            console.log(ceTemp)
+
+            console.log(this.users)
+
+            this.users.push(ceTemp);
+
         }
 
         this.renderUsers();
@@ -129,14 +135,14 @@ var app = {
 
         // });
 
-        this.bindEvents();
+        // this.bindEvents();
 
-        // add the typing indicator plugin
-        let config = { timeout: 2000 };
-        const typingIndicator = ChatEngineCore.plugin['chat-engine-typing-indicator'](config);
-        this.chat.plugin(typingIndicator);
+        // // add the typing indicator plugin
+        // let config = { timeout: 2000 };
+        // const typingIndicator = ChatEngineCore.plugin['chat-engine-typing-indicator'](config);
+        // this.chat.plugin(typingIndicator);
 
-        this.renderUserTyping();
+        // this.renderUserTyping();
     },
     cacheDOM: function() {
         this.$chatHistory = $('.chat-history');
@@ -153,6 +159,7 @@ var app = {
     bindMessages: function() {
 
         this.chat.on('message', function(message) {
+
             app.renderMessage(message);
         });
 
@@ -189,7 +196,7 @@ var app = {
 
         this.chat.on('$typingIndicator.startTyping', (payload) => {
             console.debug(payload);
-            $('#typing').html(payload.sender.uuid + ' is typing...');
+            $('#typing').html(payload.sender.uuid + ' mping...');
         })
     },
     renderUsers: function() {
@@ -198,8 +205,7 @@ var app = {
         var user = false;
 
         $('#people-list ul').empty();
-        this.users.forEach(function(user) {
-
+        this.users.forEach((user) => {
             $('#people-list ul').append(peopleTemplate(user.state(this.chat)));
         });
 
