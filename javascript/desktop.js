@@ -67,7 +67,7 @@ var app = {
             subscribeKey: userSubKey
         }, {
             // this can make your broswer slooow
-            debug: false,
+            debug: true,
             namspace: 'ce-desktop'
         });
 
@@ -88,15 +88,12 @@ var app = {
     simulateOfflineUsers: function() {
 
         for (var j = 3; j > 0; j--) {
-
             var tempPerson = generatePerson(false);
 
             var ceTemp = new this.ChatEngine.User(tempPerson.uuid);
             ceTemp.update(this.chat, tempPerson)
 
-            console.log(ceTemp)
-
-            console.log(this.users)
+            console.log(this.chat)
 
             this.users.push(ceTemp);
 
@@ -135,14 +132,14 @@ var app = {
 
         // });
 
-        // this.bindEvents();
+        this.bindEvents();
 
-        // // add the typing indicator plugin
-        // let config = { timeout: 2000 };
-        // const typingIndicator = ChatEngineCore.plugin['chat-engine-typing-indicator'](config);
-        // this.chat.plugin(typingIndicator);
+        // add the typing indicator plugin
+        let config = { timeout: 2000 };
+        const typingIndicator = ChatEngineCore.plugin['chat-engine-typing-indicator'](config);
+        this.chat.plugin(typingIndicator);
 
-        // this.renderUserTyping();
+        this.renderUserTyping();
     },
     cacheDOM: function() {
         this.$chatHistory = $('.chat-history');
@@ -196,7 +193,7 @@ var app = {
 
         this.chat.on('$typingIndicator.startTyping', (payload) => {
             console.debug(payload);
-            $('#typing').html(payload.sender.uuid + ' mping...');
+            $('#typing').html(payload.sender.state(this.chat).full + ' is typing...');
         })
     },
     renderUsers: function() {
