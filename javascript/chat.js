@@ -9,7 +9,7 @@ const ChatEngine = ChatEngineCore.create({
     publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
     subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
 }, {
-    namespace: 'test'
+    namespace: 'test',
     debug: true
 });
 
@@ -34,7 +34,7 @@ ChatEngine.on('$.ready', (data) => {
     checkSubmit = function(e) {
 
         if (e.keyCode == 13) {
-            sendchat();
+            sendChat();
         }
     }
 

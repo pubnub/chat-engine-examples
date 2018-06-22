@@ -67,7 +67,7 @@ var app = {
             subscribeKey: userSubKey
         }, {
             // this can make your broswer slooow
-            debug: true,
+            debug: false,
             namspace: 'ce-desktop'
         });
 
@@ -91,9 +91,7 @@ var app = {
             var tempPerson = generatePerson(false);
 
             var ceTemp = new this.ChatEngine.User(tempPerson.uuid);
-            ceTemp.update(this.chat, tempPerson)
-
-            console.log(this.chat)
+            ceTemp.update(tempPerson);
 
             this.users.push(ceTemp);
 
@@ -106,9 +104,7 @@ var app = {
 
         this.chat = new this.ChatEngine.Chat('chatengine-meta');
 
-        console.log(data.me)
-
-        // data.me.update(this.chat, newPerson);
+//        data.me.update(newPerson);
 
         //// UNCOMMENT code below to enbale the 'markdown-plugin'
         //// also the `.plugin(markdown);` line chained to `this.chat.search`
@@ -192,8 +188,7 @@ var app = {
         })
 
         this.chat.on('$typingIndicator.startTyping', (payload) => {
-            console.debug(payload);
-            $('#typing').html(payload.sender.state(this.chat).full + ' is typing...');
+            $('#typing').html(payload.sender.state().full + ' is typing...');
         })
     },
     renderUsers: function() {
@@ -203,7 +198,7 @@ var app = {
 
         $('#people-list ul').empty();
         this.users.forEach((user) => {
-            $('#people-list ul').append(peopleTemplate(user.state(this.chat)));
+            $('#people-list ul').append(peopleTemplate(user.state()));
         });
 
     },
@@ -221,13 +216,11 @@ var app = {
         // Converts PubNub timetoken to JS date time. ChatEngine 0.9+ only.
         var messageJsTime = new Date(parseInt(message.timetoken.substring(0,13)));
 
-        console.log(this.chat)
-
         var context = {
             messageOutput: message.data.text,
             tt: messageJsTime.getTime(),
             time: app.parseTime(messageJsTime),
-            user: message.sender.state(this.chat)
+            user: message.sender.state()
         };
 
         app.$chatHistoryList.append(template(context));

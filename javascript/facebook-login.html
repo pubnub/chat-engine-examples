@@ -35,15 +35,13 @@
 
         let me = data.me;
 
-        let fbChat = new ChatEngine.Chat('facebook-chat');
-
-        fbChat.setState(fbMe);
+        me.update(fbMe)
 
         FB.api("/" + me.uuid + "/picture?redirect=false", function(response) {
 
             if (response && !response.error) {
 
-                fbChat.setState({
+                ChatEngine.global.setState({
                     avatar: response.data.url
                 });
 
@@ -53,7 +51,7 @@
 
         $('#chat-input').submit(() => {
 
-            fbChat.emit('message', {
+            ChatEngine.global.emit('message', {
                 text: $('#message').val()
             });
 
@@ -63,11 +61,9 @@
 
         });
 
-        fbChat.on('message', (payload) => {
+        ChatEngine.global.on('message', (payload) => {
 
-            console.log(payload)
-
-            let userProfile = payload.sender.state(fbChat);
+            let userProfile = payload.sender.state(ChatEngine.global);
 
             $('#chat').append($('<p><img src="' + userProfile.avatar + '" style="border-radius: 50%; width: 20px; height: 20px; display: inline-block;"/> <strong>' + userProfile.name + ':</strong> ' + payload.data.text + '</p>'));
 

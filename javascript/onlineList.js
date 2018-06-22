@@ -27,10 +27,6 @@ ChatEngine.on('$.ready', () => {
 
     });
 
-    setInterval(function() {
-        console.log('users online', newChat.users);
-    }, 1000);
-
 });
 
 ChatEngine.connect(username, 'auth-key');
