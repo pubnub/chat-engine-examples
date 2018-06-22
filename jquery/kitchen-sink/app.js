@@ -40,7 +40,7 @@ const $messageTemplate = function(payload, classes) {
 
     let html =
         '<div class="' + classes + '">' +
-        '<p class="text-muted username">' + payload.sender.state.username + '</p>' +
+        '<p class="text-muted username">' + payload.sender.state().username + '</p>' +
         '<p>' + payload.data.text + '</p>' +
         '</div>';
 
@@ -55,10 +55,10 @@ const $userTemplate = function(user, chat) {
 
     if(user.uuid !== me.uuid) {
         html +=
-            '<a href="">' + user.state.username + '</a> ';
+            '<a href="">' + user.state().username + '</a> ';
     } else {
         html +=
-            '<strong>' + user.state.username + '</strong> ';
+            '<strong>' + user.state().username + '</strong> ';
     }
 
 
@@ -86,7 +86,7 @@ const identifyMe = function(username) {
     });
 
     // render the value of me in the GUI
-    $('#me').text(me.state.username + ' with uuid: ' + me.uuid);
+    $('#me').text(me.state().username + ' with uuid: ' + me.uuid);
 
 }
 
@@ -245,7 +245,7 @@ const renderChat = function(privateChat) {
     privateChat.on('$typingIndicator.startTyping', (payload) => {
 
         // write some text saying that user is typing
-        $tpl.find('.typing').text(payload.sender.state.username + ' is typing...');
+        $tpl.find('.typing').text(payload.sender.state().username + ' is typing...');
 
         // and show their typing indication next to their name in any other location
         $tpl.find('.' + payload.sender.uuid).find('.show-typing').show();
@@ -317,17 +317,17 @@ const bindUsernamePlugin = function() {
 
 // ChatEngine Configure
 ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
-}, {
-    globalChannel: 'chat-engine-jquery-kitchen-sink',
-    debug: true
+    publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+    subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
+ }, {
+    namespace: 'kitchen-sink',
+    debug: false
 });
 
 let username = window.location.hash.substr(1);
 
 // create a user for myself and store as ```me```
-ChatEngine.connect(username || new Date().getTime().toString(), {}, 'auth-key');
+ChatEngine.connect(username || new Date().getTime().toString(), 'auth-key');
 
 ChatEngine.on('$.session.chat.join', (data) => {
 
@@ -366,6 +366,6 @@ ChatEngine.on('$.ready', (data) => {
 
 });
 
-ChatEngine.on('$.state', (payload) => {
+ChatEngine.on('$.state()', (payload) => {
     updateUser(payload.user);
 });
