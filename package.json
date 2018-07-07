@@ -20,5 +20,14 @@
   "scripts": {
     "deploy": "surge --domain https://chat-engine-examples.surge.sh"
   },
-  "author": "Ian Jennings"
+  "author": "Ian Jennings",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pubnub/ocf-examples.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pubnub/ocf-examples/issues"
+  },
+  "homepage": "https://github.com/pubnub/ocf-examples#readme"
 }

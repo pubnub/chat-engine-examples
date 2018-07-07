@@ -103,7 +103,7 @@ var app = {
     },
     ready: function(data) {
 
-        this.chat = new this.ChatEngine.Chat('chatengine-meta');
+        this.chat = this.ChatEngine.global;
 
         //// UNCOMMENT code below to enbale the 'markdown-plugin'
         //// also the `.plugin(markdown);` line chained to `this.chat.search`

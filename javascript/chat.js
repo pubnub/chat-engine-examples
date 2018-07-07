@@ -6,22 +6,20 @@ const textOutput = document.getElementById('chat-output');
 let sendChat = function() {}; // will be filled in when ChatEngine connects
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
-    subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
+    publishKey: 'pub-c-5ac6daf0-68af-42e4-a10e-272dde9e102e',
+    subscribeKey: 'sub-c-d850793e-8082-11e8-9629-8e5476d20059'
 }, {
     namespace: 'test',
-    debug: true
+    debug: false
 });
 
 ChatEngine.connect(username, 'auth-key' + new Date().getTime());
 
 ChatEngine.on('$.ready', (data) => {
 
-    let myChat = new ChatEngine.Chat();
-
     sendChat = function(e) {
 
-        myChat.emit('message', {
+        ChatEngine.global.emit('message', {
             text: textInput.value
         });
 
@@ -38,7 +36,7 @@ ChatEngine.on('$.ready', (data) => {
         }
     }
 
-    myChat.on('message', (payload) => {
+    ChatEngine.global.on('message', (payload) => {
 
         let div = document.createElement("p");
         div.innerHTML = payload.sender.uuid + ': ' + payload.data.text;
