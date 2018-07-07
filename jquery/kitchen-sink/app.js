@@ -232,13 +232,17 @@ const renderChat = function(privateChat) {
         $tpl.find('.log').append(renderMessage(payload, null));
     });
 
-    // if this chat receives a message that's not from this sessions
-    privateChat.search({
-        event: 'message',
-        limit: 10
-    }).on('message', function(payload) {
-        // prepend because we go backward
-        $tpl.find('.log').prepend(renderMessage(payload, 'text-muted'));
+    privateChat.on('$.connect', () =>{
+
+        // if this chat receives a message that's not from this sessions
+        privateChat.search({
+            event: 'message',
+            limit: 10
+        }).on('message', function(payload) {
+            // prepend because we go backward
+            $tpl.find('.log').prepend(renderMessage(payload, 'text-muted'));
+        });
+
     });
 
     // when this chat gets the typing event
@@ -321,6 +325,7 @@ ChatEngine = ChatEngineCore.create({
     subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
  }, {
     namespace: 'kitchen-sink',
+    enableSync: true,
     debug: false
 });
 
@@ -351,7 +356,7 @@ ChatEngine.on('$.ready', (data) => {
     // plug the search bar into the username plugin
     bindUsernamePlugin();
 
-    me.on('$.session.chat.join', (data) => {
+    me.session.on('$.chat.join', (data) => {
 
         if(data.chat.group == 'custom') {
             renderChat(data.chat);
@@ -359,7 +364,7 @@ ChatEngine.on('$.ready', (data) => {
         }
 
     });
-    me.on('$.session.chat.leave', (data) => {
+    me.session.on('$.chat.leave', (data) => {
 
         $('#' + data.chat.channel.replace(/[^a-zA-Z 0-9]+/g, '')).remove();
     });
