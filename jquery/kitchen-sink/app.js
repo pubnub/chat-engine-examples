@@ -284,7 +284,9 @@ const renderChat = function(privateChat) {
 // bind the input from the search bar to the usernameSearch plugin
 const bindUsernamePlugin = function() {
 
-    ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']());
+    ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({
+        prop: ['states', ChatEngine.global.channel, 'username']
+    }));
 
     // when someone types in the username search
     $('#usernameSearch').on('change keyup paste click blur', () => {
@@ -365,7 +367,6 @@ ChatEngine.on('$.ready', (data) => {
 
     });
     me.session.on('$.chat.leave', (data) => {
-
         $('#' + data.chat.channel.replace(/[^a-zA-Z 0-9]+/g, '')).remove();
     });
 
