@@ -2,11 +2,11 @@ angular.module('chatApp', ['open-chat-framework'])
     .run(['$rootScope', 'ngChatEngine', function($rootScope, ngChatEngine) {
 
         $rootScope.ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-            subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+            publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+            subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
         }, {
             debug: true,
-            globalChannel: 'chat-engine-angular-simple'
+            namespace: 'ce-ng-simple'
         });
 
         // bind open chat framework angular plugin
@@ -114,7 +114,7 @@ angular.module('chatApp', ['open-chat-framework'])
 
 
         // create a user for myself and store as ```me```
-        $scope.ChatEngine.connect(new Date().getTime(), {}, 'auth-key');
+        $scope.ChatEngine.connect(new Date().getTime(), 'auth-key');
 
         $scope.ChatEngine.on('$.ready', (data) => {
 
@@ -122,7 +122,9 @@ angular.module('chatApp', ['open-chat-framework'])
 
             $scope.me.plugin(ChatEngineCore.plugin['chat-engine-random-username']($scope.ChatEngine.global));
 
-            $scope.ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']());
+            $scope.ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({
+                prop: ['states', $scope.ChatEngine.global.channel, 'username']
+            }));
 
             // when I get a private invit
             $scope.me.direct.on('$.invite', (payload) => {
