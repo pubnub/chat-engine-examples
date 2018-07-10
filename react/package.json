@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "react-scripts": "0.8.5",
-    "react": "15.0.1",
-    "react-dom": "15.0.0",
+    "chat-engine": "^0.8.4",
     "create-react-class": "^15.6.3",
-    "chat-engine": "^0.8.4"
+    "react": "^15.0.1",
+    "react-dom": "15.0.0",
+    "react-scripts": "0.8.5"
   },
   "scripts": {
     "start": "react-scripts start",

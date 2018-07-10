@@ -7,15 +7,16 @@ const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+    publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+    subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
 }, {
-    globalChannel: 'chat-engine-react'
+    namespace: 'ce-react',
+    debug: true
 });
 
-ChatEngine.connect(username, {
+ChatEngine.connect(username, 'auth-key', {
     signedOnTime: now
-}, 'auth-key');
+});
 
 class Message extends React.Component{
     render () {
@@ -42,7 +43,11 @@ var Chat = createReactClass({
 
     sendChat: function() {
 
+        console.log('sendChat')
+
         if (this.state.chatInput) {
+
+            console.log('emitting')
 
             ChatEngine.global.emit('message', {
                 text: this.state.chatInput
@@ -57,6 +62,8 @@ var Chat = createReactClass({
     componentDidMount: function() {
 
         ChatEngine.global.on('message', (payload) => {
+
+            console.log('message')
 
             let messages = this.state.messages;
 
