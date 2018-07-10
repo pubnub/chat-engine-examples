@@ -49,10 +49,10 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
         // ChatEngine Configure
         const ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-            subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+            publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+            subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
         }, {
-            debug: true,
+            debug: false,
             globalChannel: 'chat-engine-flowtron'
         });
 
@@ -89,14 +89,12 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                                 localStorage.setItem('profile', JSON.stringify(profile));
 
-                                ChatEngine.connect(profile.user_id, profile, localStorage.getItem('access_token'));
+                                ChatEngine.connect(profile.user_id, localStorage.getItem('access_token'), profile);
 
                                 if(ChatEngine.ready) {
-                                    console.log('ready')
                                     deferred.resolve();
                                 } else {
                                     ChatEngine.on('$.ready', function () {
-                                        console.log('ready')
                                         deferred.resolve();
                                     });
                                 }
@@ -207,12 +205,16 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                 }
 
-                room.chat.search()
+                room.chat.on('$.connected', () => {
+
+                    room.chat.search()
                     .on('message', function(payload) {
                         addMessage(payload, 'history');
                     }).on('upload', function(payload) {
                         addMessage(payload, 'upload');
                     });
+
+                });
 
                 room.chat.on('message', function(payload) {
 
@@ -322,7 +324,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
         });
 
         ChatEngine.global.plugin(ChatEngineCore.plugin['chat-engine-online-user-search']({
-            prop: 'name'
+            prop: ['states', ChatEngine.global, 'name']
         }));
 
         // hide / show usernames based on input
