@@ -7,10 +7,10 @@ const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+    publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+    subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
 }, {
-    globalChannel: 'react-native-demo',
+    namespace: 'rn-ce',
     debug: true
 });
 
@@ -53,7 +53,7 @@ export default class PizzaTranslator extends Component {
         ChatEngine.connect(username, {
             signedOnTime: now,
             email: new Date()
-        }, 'auth-key');
+        });
 
         ChatEngine.on('$.ready', (data) => {
 
@@ -82,7 +82,7 @@ export default class PizzaTranslator extends Component {
             <ListView dataSource = { this.state.dataSource } renderRow = {
                 (rowData) =>
                     <View>
-                        <Image style ={{ width: 100, height: 100 }} source = {{ uri: 'https:' + rowData.sender.state.gravatar, cache: 'reload' }}/>
+                        <Image style ={{ width: 100, height: 100 }} source = {{ uri: 'https:' + rowData.sender.state().gravatar, cache: 'reload' }}/>
                         <Text>{rowData.sender.uuid}: {rowData.data.text}</Text >
                     </View>
                 } />
