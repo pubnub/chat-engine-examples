@@ -50,7 +50,7 @@ export default class PizzaTranslator extends Component {
 
     componentDidMount() {
 
-        ChatEngine.connect(username, {
+        ChatEngine.connect(username, 'auth-key', {
             signedOnTime: now,
             email: new Date()
         });
@@ -103,6 +103,6 @@ export default class PizzaTranslator extends Component {
 
         }
 
-    }
+    }'auth-key',
 
     AppRegistry.registerComponent('PizzaTranslator', () => PizzaTranslator);
