@@ -59,9 +59,13 @@ export default class PizzaTranslator extends Component {
 
             const me = data.me;
 
-            me.plugin(ChatEngineGravatar());
+            me.plugin(ChatEngineGravatar({
+                prop: ['states', ChatEngine.global.channel, 'email']
+            }));
 
             ChatEngine.global.on('message', (payload) => {
+
+                console.log(me)
 
                 this.messages.push(payload);
 
