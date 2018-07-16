@@ -36,6 +36,10 @@ export default class PizzaTranslator extends Component {
 
     sendChat() {
 
+        console.log('updated')
+
+        console.log(ChatEngine.me.state())
+
         if (this.state.chatInput) {
 
             ChatEngine.global.emit('message', {
@@ -52,7 +56,7 @@ export default class PizzaTranslator extends Component {
 
         ChatEngine.connect(username, 'auth-key', {
             signedOnTime: now,
-            email: new Date()
+            email: new Date().getTime()
         });
 
         ChatEngine.on('$.ready', (data) => {
@@ -64,8 +68,6 @@ export default class PizzaTranslator extends Component {
             }));
 
             ChatEngine.global.on('message', (payload) => {
-
-                console.log(me)
 
                 this.messages.push(payload);
 
@@ -83,11 +85,11 @@ export default class PizzaTranslator extends Component {
 
         return (
             <View style = { { padding: 10 } } >
-            <ListView dataSource = { this.state.dataSource } renderRow = {
+            <ListView enableEmptySections dataSource = { this.state.dataSource } renderRow = {
                 (rowData) =>
                     <View>
                         <Image style ={{ width: 100, height: 100 }} source = {{ uri: 'https:' + rowData.sender.state().gravatar, cache: 'reload' }}/>
-                        <Text>{rowData.sender.uuid}: {rowData.data.text}</Text >
+                        <Text>{rowData.sender.uuid}: {rowData.data.text}</Text>
                     </View>
                 } />
             <TextInput
@@ -103,10 +105,11 @@ export default class PizzaTranslator extends Component {
                 title = "Send"
                 color = "#841584"
             />
-        </View>)
+        </View>
+        )
 
-        }
+    }
 
-    }'auth-key',
+}
 
-    AppRegistry.registerComponent('PizzaTranslator', () => PizzaTranslator);
+AppRegistry.registerComponent('PizzaTranslator', () => PizzaTranslator);
