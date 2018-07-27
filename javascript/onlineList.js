@@ -16,7 +16,7 @@ ChatEngine.on('$.ready', () => {
 
     let newChat = new ChatEngine.Chat('online-list-example');
 
-    newChat.on('$.online.here', (payload) => {
+    newChat.on('$.online.*', (payload) => {
 
         let div = document.createElement("li");
         div.innerHTML = payload.user.uuid;
