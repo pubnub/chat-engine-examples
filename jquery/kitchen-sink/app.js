@@ -153,7 +153,6 @@ const renderOnlineList = function($el, chat) {
         $el.find('.' + payload.user.uuid).remove();
     });
 
-
     chat.plugin(ChatEngineCore.plugin['chat-engine-typing-indicator']({
         timeout: 1000
     }));

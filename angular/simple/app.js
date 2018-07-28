@@ -5,7 +5,7 @@ angular.module('chatApp', ['open-chat-framework'])
             publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
             subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
         }, {
-            debug: true,
+            debug: false,
             namespace: 'ce-ng-simple'
         });
 
@@ -17,6 +17,9 @@ angular.module('chatApp', ['open-chat-framework'])
 
     }])
     .controller('Chat', function($scope) {
+
+        console.log($scope.chat.chatEngine.chats)
+        console.log('chat controller!', $scope.chat)
 
         $scope.chat.plugin(ChatEngineCore.plugin['chat-engine-typing-indicator']({
             timeout: 5000
@@ -69,17 +72,31 @@ angular.module('chatApp', ['open-chat-framework'])
 
         }
 
-        // if this chat receives a message that's not from this sessions
-        $scope.chat.search({
-            event: 'message'
-        }).on('message', function(payload) {
+        let searcher = () => {
+            // if this chat receives a message that's not from this sessions
+            $scope.chat.search({
+                event: 'message'
+            }).on('message', function(payload) {
+                // render it in the DOM with a special class
+                addMessage(payload, true);
+            });
+        }
 
-            // render it in the DOM with a special class
-            addMessage(payload, true);
-        })
+        if ($scope.chat.connected) {
+            searcher();
+        }
+
+        $scope.chat.on('$.connected', () => {
+            searcher();
+        });
+
+        console.log('binding to message')
 
         // when this chat gets a message
         $scope.chat.on('message', function(payload) {
+
+            console.log('message')
+
             // render it in the DOM
             addMessage(payload, false);
         });
@@ -131,9 +148,7 @@ angular.module('chatApp', ['open-chat-framework'])
 
                 let chat = new $scope.ChatEngine.Chat(payload.data.channel);
 
-                chat.onAny((a,b) => {
-                    console.log(a)
-                });
+                console.log('scope chats push')
 
                 // create a new chat and render it in DOM
                 $scope.chats.push(chat);
