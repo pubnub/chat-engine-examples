@@ -82,7 +82,7 @@ const identifyMe = function(username) {
     // when I get a private invite
     me.direct.on('$.invite', (payload) => {
         // create a new chat and render it in DOM
-        renderChat(new ChatEngine.Chat(payload.data.channel));
+        renderChat(new ChatEngine.Chat(payload.data.channel, {autoConnect: false}));
     });
 
     // render the value of me in the GUI
@@ -105,14 +105,10 @@ const renderUser = function($el, user) {
         let chan = [user.uuid, me.uuid].sort().join('#');
 
         // create a new chat with that channel
-        let newChat = new ChatEngine.Chat(chan);
-        newChat.on('$.connected', () => {
+        let newChat = new ChatEngine.Chat(chan, {autoConnect: false});
+        renderChat(newChat);
 
-            // this fires a private invite to the user
-            newChat.invite(user);
-            renderChat(newChat);
-
-        });
+        newChat.invite(user);
 
         return false;
 
@@ -231,7 +227,10 @@ const renderChat = function(privateChat) {
         $tpl.find('.log').append(renderMessage(payload, null));
     });
 
+    console.log('is connected?', privateChat.connected)
     privateChat.on('$.connect', () =>{
+
+        console.log('calling history')
 
         // if this chat receives a message that's not from this sessions
         privateChat.search({
@@ -277,6 +276,9 @@ const renderChat = function(privateChat) {
 
     // append the chat to the DOM
     $('#chats').append($tpl);
+
+    console.log('chat connected called from app')
+    privateChat.connect();
 
 }
 
@@ -325,7 +327,7 @@ ChatEngine = ChatEngineCore.create({
     publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
     subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
  }, {
-    namespace: 'jq-ks',
+    namespace: 'jq-ls',
     enableSync: true,
     debug: false
 });
@@ -339,8 +341,8 @@ ChatEngine.on('$.session.chat.join', (data) => {
 
     if(data.chat.group == 'default') {
         renderChat(data.chat);
-        data.chat.connect();
     }
+
 });
 
 ChatEngine.on('$.ready', (data) => {
@@ -361,7 +363,6 @@ ChatEngine.on('$.ready', (data) => {
 
         if(data.chat.group == 'custom') {
             renderChat(data.chat);
-            data.chat.connect();
         }
 
     });
