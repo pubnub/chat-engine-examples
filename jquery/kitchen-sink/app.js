@@ -227,15 +227,15 @@ const renderChat = function(privateChat) {
         $tpl.find('.log').append(renderMessage(payload, null));
     });
 
-    console.log('is connected?', privateChat.connected)
-    privateChat.on('$.connect', () =>{
+    privateChat.on('$.connected', () =>{
 
-        console.log('calling history')
+        console.log('conencted', privateChat.channel)
 
         // if this chat receives a message that's not from this sessions
         privateChat.search({
             event: 'message',
-            limit: 10
+            limit: 10,
+            restoreState: ChatEngine.global
         }).on('message', function(payload) {
             // prepend because we go backward
             $tpl.find('.log').prepend(renderMessage(payload, 'text-muted'));
@@ -277,7 +277,6 @@ const renderChat = function(privateChat) {
     // append the chat to the DOM
     $('#chats').append($tpl);
 
-    console.log('chat connected called from app')
     privateChat.connect();
 
 }
@@ -336,14 +335,6 @@ let username = window.location.hash.substr(1);
 
 // create a user for myself and store as ```me```
 ChatEngine.connect(username || new Date().getTime().toString(), 'auth-key');
-
-ChatEngine.on('$.session.chat.join', (data) => {
-
-    if(data.chat.group == 'default') {
-        renderChat(data.chat);
-    }
-
-});
 
 ChatEngine.on('$.ready', (data) => {
 
