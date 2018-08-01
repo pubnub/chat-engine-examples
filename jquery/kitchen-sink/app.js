@@ -229,14 +229,11 @@ const renderChat = function(privateChat) {
 
     privateChat.on('$.connected', () =>{
 
-        console.log('conencted', privateChat.channel)
-
         // if this chat receives a message that's not from this sessions
-        privateChat.search({
+        let search = privateChat.search({
             event: 'message',
-            limit: 10,
-            restoreState: ChatEngine.global
-        }).on('message', function(payload) {
+            limit: 10
+        }).restoreState(ChatEngine.global).on('message', function(payload) {
             // prepend because we go backward
             $tpl.find('.log').prepend(renderMessage(payload, 'text-muted'));
         });
