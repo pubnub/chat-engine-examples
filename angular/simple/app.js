@@ -72,7 +72,8 @@ angular.module('chatApp', ['open-chat-framework'])
 
         }
 
-        let searcher = () => {
+        $scope.chat.on('$.connected', () => {
+
             // if this chat receives a message that's not from this sessions
             $scope.chat.search({
                 event: 'message'
@@ -80,26 +81,16 @@ angular.module('chatApp', ['open-chat-framework'])
                 // render it in the DOM with a special class
                 addMessage(payload, true);
             });
-        }
 
-        if ($scope.chat.connected) {
-            searcher();
-        }
-
-        $scope.chat.on('$.connected', () => {
-            searcher();
         });
-
-        console.log('binding to message')
 
         // when this chat gets a message
         $scope.chat.on('message', function(payload) {
-
-            console.log('message')
-
             // render it in the DOM
             addMessage(payload, false);
         });
+
+        $scope.chat.connect();
 
     })
     .controller('OnlineUser', function($scope) {
@@ -111,18 +102,16 @@ angular.module('chatApp', ['open-chat-framework'])
             let chan = new Date().getTime();
 
             // create a new chat with that channel
-            let newChat = new $scope.ChatEngine.Chat(chan);
+            let newChat = new $scope.ChatEngine.Chat(chan, {autoConnect: false});
 
             // we need to auth ourselves before we can invite others
             newChat.on('$.connected', () => {
-
                 // this fires a private invite to the user
                 newChat.invite(user);
-
-                // add the chat to the list
-                $scope.chats.push(newChat);
-
             });
+
+            // add the chat to the list
+            $scope.chats.push(newChat);
 
         };
 
@@ -146,9 +135,7 @@ angular.module('chatApp', ['open-chat-framework'])
             // when I get a private invit
             $scope.me.direct.on('$.invite', (payload) => {
 
-                let chat = new $scope.ChatEngine.Chat(payload.data.channel);
-
-                console.log('scope chats push')
+                let chat = new $scope.ChatEngine.Chat(payload.data.channel, {autoConnect: false});
 
                 // create a new chat and render it in DOM
                 $scope.chats.push(chat);

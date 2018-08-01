@@ -50,7 +50,7 @@
 
         ChatEngine.on('$.ready', () => {
 
-            var chat = new ChatEngine.Chat('jquery-chat' + new Date().getTime(), false);
+            var chat = new ChatEngine.Chat('jquery-chat' + new Date().getTime());
 
             $('#chat-input').submit(() => {
 
@@ -67,10 +67,6 @@
 
                 $('#chat').append($('<p><strong>' + payload.sender.uuid + ':</strong> ' + payload.data.text + '</p>'));
 
-            });
-
-            chat.onAny((event, data) => {
-                console.log(event, data);
             });
 
             chat.on('$.connected', () => {

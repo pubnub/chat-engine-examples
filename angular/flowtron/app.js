@@ -154,7 +154,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                 let room = {
                     name: channel,
-                    chat: new ChatEngine.Chat(channel, false),
+                    chat: new ChatEngine.Chat(channel, {autoConnect: false}),
                     isGroup: channels.indexOf(channel) > -1,
                     messages: [],
                     typingUsers: []
@@ -256,7 +256,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
                     updateTyping(event.sender, false);
                 });
 
-
+                room.chat.connect();
 
                 obj.list.push(room);
 
