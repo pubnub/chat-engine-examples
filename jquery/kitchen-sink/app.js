@@ -233,7 +233,9 @@ const renderChat = function(privateChat) {
         let search = privateChat.search({
             event: 'message',
             limit: 10
-        }).restoreState(ChatEngine.global).on('message', function(payload) {
+        })
+        .restoreState(ChatEngine.global)
+        .on('message', function(payload) {
             // prepend because we go backward
             $tpl.find('.log').prepend(renderMessage(payload, 'text-muted'));
         });
