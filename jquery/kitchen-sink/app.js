@@ -325,9 +325,9 @@ ChatEngine = ChatEngineCore.create({
     publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
     subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
  }, {
-    namespace: 'jq-ls',
+    namespace: 'jq-ks',
     enableSync: true,
-    debug: false
+    debug: true
 });
 
 let username = window.location.hash.substr(1);

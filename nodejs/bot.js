@@ -1,19 +1,18 @@
 "use strict";
 
 // load the jquery/kitchen-sink example to see the bot in action
-
 let ChatEngineCore = require('chat-engine');
 let typingIndicator = require('chat-engine-typing-indicator');
 
 var ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+    publishKey: 'pub-c-01491c54-379f-4d4a-b20b-9a03c24447c7',
+    subscribeKey: 'sub-c-eaf4a984-4356-11e8-91e7-8ad1b2d46395'
 }, {
-    globalChannel: 'chat-engine-jquery-kitchen-sink',
+    namespace: 'jq-ks',
     debug: false
 });
 
-ChatEngine.connect('robot', { username: 'rob-the-robot' }, 'auth-key');
+ChatEngine.connect('robot', 'some-auth-key');
 
 var chats = {};
 
@@ -24,6 +23,8 @@ ChatEngine.onAny((a) => {
 ChatEngine.on('$.ready', (data) => {
 
     let me = data.me;
+
+    me.update({ username: 'rob-the-robot' });
 
     me.direct.on('$.invite', (payload) => {
 
@@ -54,7 +55,7 @@ ChatEngine.on('$.ready', (data) => {
                         setTimeout((argument) => {
 
                             chat.emit('message', {
-                                text: 'hey there ' + payload.sender.state.username
+                                text: 'hey there ' + payload.sender.state().username
                             });
 
                             chat.typingIndicator.stopTyping(); // add this to plugin middleware

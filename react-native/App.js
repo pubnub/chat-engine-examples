@@ -36,10 +36,6 @@ export default class PizzaTranslator extends Component {
 
     sendChat() {
 
-        console.log('updated')
-
-        console.log(ChatEngine.me.state())
-
         if (this.state.chatInput) {
 
             ChatEngine.global.emit('message', {
