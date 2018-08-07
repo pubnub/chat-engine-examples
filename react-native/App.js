@@ -50,14 +50,16 @@ export default class PizzaTranslator extends Component {
 
     componentDidMount() {
 
-        ChatEngine.connect(username, 'auth-key', {
-            signedOnTime: now,
-            email: new Date().getTime()
-        });
+        ChatEngine.connect(username, 'auth-key')
 
         ChatEngine.on('$.ready', (data) => {
 
             const me = data.me;
+
+            me.update({
+                signedOnTime: now,
+                email: new Date().getTime()
+            });
 
             me.plugin(ChatEngineGravatar({
                 prop: ['states', ChatEngine.global.channel, 'email']
