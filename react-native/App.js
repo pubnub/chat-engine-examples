@@ -52,9 +52,7 @@ export default class PizzaTranslator extends Component {
 
         ChatEngine.connect(username, 'auth-key')
 
-        ChatEngine.on('$.ready', (data) => {
-
-            const me = data.me;
+        ChatEngine.on('$.ready', (me) => {
 
             me.update({
                 signedOnTime: now,

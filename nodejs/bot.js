@@ -1,7 +1,7 @@
 "use strict";
 
 // load the jquery/kitchen-sink example to see the bot in action
-let ChatEngineCore = require('chat-engine');
+let ChatEngineCore = require('../../chat-engine');
 let typingIndicator = require('chat-engine-typing-indicator');
 
 var ChatEngine = ChatEngineCore.create({
@@ -20,9 +20,7 @@ ChatEngine.onAny((a) => {
     console.log(a)
 })
 
-ChatEngine.on('$.ready', (data) => {
-
-    let me = data.me;
+ChatEngine.on('$.ready', (me) => {
 
     me.update({ username: 'rob-the-robot' });
 
