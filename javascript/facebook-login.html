@@ -31,9 +31,7 @@
 
     let fbMe;
 
-    ChatEngine.on('$.ready', (data) => {
-
-        let me = data.me;
+    ChatEngine.on('$.ready', (me) => {
 
         me.update(fbMe)
 

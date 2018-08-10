@@ -335,9 +335,9 @@ let username = window.location.hash.substr(1);
 // create a user for myself and store as ```me```
 ChatEngine.connect(username || new Date().getTime().toString(), 'auth-key');
 
-ChatEngine.on('$.ready', (data) => {
+ChatEngine.on('$.ready', (whoiam) => {
 
-    me = data.me;
+    me = whoiam;
 
     // set up the concept of me and global
     identifyMe(username);

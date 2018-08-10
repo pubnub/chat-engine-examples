@@ -33,8 +33,8 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
         });
 
-        ChatEngine.on('$.ready', (data) => {
-            Me.profile = data.me;
+        ChatEngine.on('$.ready', (me) => {
+            Me.profile = me;
         });
 
     })

@@ -78,8 +78,8 @@ bindUsers: function() {
 Currently the application does not render messages previously sent prior to invoking the current session. Thankfully CE allows one to easily populate the chat history with messages previously sent on a specified chat channel. To do so, uncomment the following snippet within below the `ready()` function within javacript/desktop.js:
 
 ```javascript
-ready: function(data) {
-    this.me = data.me;
+ready: function(me) {
+    this.me = me;
     this.chat = new this.ChatEngine.Chat('chatengine-meta');
 
     // uncomment code below to leverage PubNub's MSG History feature

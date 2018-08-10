@@ -15,11 +15,9 @@ const ChatEngine = ChatEngineCore.create({
 
 ChatEngine.connect(username, 'auth-key' + new Date().getTime());
 
-ChatEngine.on('$.ready', (data) => {
+ChatEngine.on('$.ready', (me) => {
 
     sendChat = function(e) {
-
-        console.log('emitting')
 
         ChatEngine.global.emit('message', {
             text: textInput.value

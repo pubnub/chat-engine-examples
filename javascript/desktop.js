@@ -77,12 +77,13 @@ var app = {
 
         this.cacheDOM();
 
-        this.ChatEngine.on('$.ready', function(data) {
-            app.ready(data);
+        this.ChatEngine.on('$.ready', function(me) {
+            app.ready(me);
             app.simulateOfflineUsers();
             app.bindMessages();
             app.bindUsers();
-            data.me.update(newPerson);
+
+            me.update(newPerson);
         });
 
     },

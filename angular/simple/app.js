@@ -122,9 +122,9 @@ angular.module('chatApp', ['open-chat-framework'])
         // create a user for myself and store as ```me```
         $scope.ChatEngine.connect(new Date().getTime(), 'auth-key');
 
-        $scope.ChatEngine.on('$.ready', (data) => {
+        $scope.ChatEngine.on('$.ready', (me) => {
 
-            $scope.me = data.me;
+            $scope.me = me;
 
             $scope.me.plugin(ChatEngineCore.plugin['chat-engine-random-username']($scope.ChatEngine.global));
 
