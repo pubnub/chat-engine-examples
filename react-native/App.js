@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import { AppRegistry, Button, Text, TextInput, Image, View, FlatList, ListView } from 'react-native';
+import { AppRegistry, Button, Text, TextInput, Image, View, FlatList, ListView, BackHandler } from 'react-native';
 import ChatEngineCore from 'chat-engine'
 import ChatEngineGravatar from 'chat-engine-gravatar'
 
 const now = new Date().getTime();
 const username = ['user', now].join('-');
 
-const PUBLISH_KEY = '';
-const SUBSCRIBE_KEY = '';
+const PUBLISH_KEY = 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b';
+const SUBSCRIBE_KEY = 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518';
 
 if (PUBLISH_KEY == '' || SUBSCRIBE_KEY == '') {
     console.log('Please add \'PUBLISH_KEY\' and or \'SUBSCRIBE_KEY\'');
-    process.exit(1);
+    BackHandler.exitApp('Please add \'PUBLISH_KEY\' and or \'SUBSCRIBE_KEY\'');
 }
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: '',
-    subscribeKey: ''
+    publishKey: PUBLISH_KEY,
+    subscribeKey: SUBSCRIBE_KEY
 }, {
     globalChannel: 'react-native-demo',
     debug: true
@@ -86,7 +86,7 @@ export default class PizzaTranslator extends Component {
     render() {
 
         return (
-            <View style = { { padding: 10, flex: 1 } } >
+            <View style = {{ padding: 10, flex: 1 , backgroundColor: 'powderblue' }} >
             <ListView dataSource = { this.state.dataSource } renderRow = {
                 (rowData) =>
                     <View>
