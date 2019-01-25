@@ -6,8 +6,8 @@ import ChatEngineGravatar from 'chat-engine-gravatar'
 const now = new Date().getTime();
 const username = ['user', now].join('-');
 
-const PUBLISH_KEY = 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b';
-const SUBSCRIBE_KEY = 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518';
+const PUBLISH_KEY = '';
+const SUBSCRIBE_KEY = '';
 
 if (PUBLISH_KEY == '' || SUBSCRIBE_KEY == '') {
     console.log('Please add \'PUBLISH_KEY\' and or \'SUBSCRIBE_KEY\'');
