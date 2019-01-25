@@ -1,6 +1,6 @@
 {
   "name": "react-native-example",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "devDependencies": {
     "react-native-scripts": "0.0.40",
@@ -21,8 +21,8 @@
   "dependencies": {
     "chat-engine": "^0.8.4",
     "chat-engine-gravatar": "0.0.7",
-    "expo": "^18.0.3",
-    "react": "16.0.0-alpha.12",
-    "react-native": "^0.45.1"
+    "expo": "^26.1.1",
+    "react": "^16.7.0",
+    "react-native": "^0.54.2"
   }
 }
