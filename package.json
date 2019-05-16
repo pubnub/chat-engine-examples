@@ -1,7 +1,7 @@
 {
   "name": "chat-engine-examples",
   "version": "0.0.1",
-  "description": "Examples of ChatEngine for a ton of frameworks",
+  "description": "Examples of ChatEngine for many popular frameworks",
   "main": "index.html",
   "dependencies": {
     "chat-engine": "^0.9.21",
@@ -17,8 +17,5 @@
     "react-dom": "15.4.2"
   },
   "devDependencies": {},
-  "scripts": {
-    "deploy": "surge --domain https://chat-engine-examples.surge.sh"
-  },
   "author": "Ian Jennings"
 }
