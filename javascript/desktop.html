@@ -210,6 +210,36 @@
         position: relative;
     }
 
+    .chat .chat-history .message em {
+        font-style: italic;
+    }
+
+    .chat .chat-history .message strong {
+        font-weight: bold;
+    }
+
+    .chat .chat-history .message s {
+        text-decoration: line-through;
+    }
+
+    .chat .chat-history .message ul {
+        list-style-type: disc;
+        margin-left: 18px;
+    }
+
+    .chat .chat-history .message ol {
+        list-style-type: decimal;
+        margin-left: 18px;
+    }
+
+    .chat .chat-history .message s {
+        text-decoration: line-through;
+    }
+
+    .chat .chat-history .message p {
+        display: inline-block;
+    }
+
     .chat .chat-history .message:after {
         bottom: 100%;
         left: 7%;
@@ -368,9 +398,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js"></script>
     <script id="message-template" type="text/x-handlebars-template">
-        <li class="clearfix">
+        <li class="clearfix" data-order={{tt}}>
             <div class="message-data align-right">
-                <span class="message-data-time">{{time}}, Today</span> &nbsp; &nbsp;
+                <span class="message-data-time">{{time}}</span> &nbsp; &nbsp;
                 <span class="message-data-name">{{user.first}}</span> <i class="fa fa-circle me"></i>
             </div>
             <div class="message other-message float-right">
@@ -379,10 +409,10 @@
         </li>
     </script>
     <script id="message-response-template" type="text/x-handlebars-template">
-        <li>
+        <li data-order={{tt}}>
             <div class="message-data">
                 <span class="message-data-name"><i class="fa fa-circle online"></i> {{user.first}}</span>
-                <span class="message-data-time">{{time}}, Today</span>
+                <span class="message-data-time">{{time}}</span>
             </div>
             <div class="message my-message">
                 {{{messageOutput}}}

@@ -336,7 +336,7 @@ ChatEngine = ChatEngineCore.create({
 let username = window.location.hash.substr(1);
 
 // create a user for myself and store as ```me```
-ChatEngine.connect(username || new Date().getTime().toString(), {}, 'auth-key');
+ChatEngine.connect(username || new Date().getTime().toString());
 
 ChatEngine.on('$.session.chat.join', (data) => {
 

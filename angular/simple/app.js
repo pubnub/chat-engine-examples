@@ -123,7 +123,7 @@ angular.module('chatApp', ['open-chat-framework'])
 
 
         // create a user for myself and store as ```me```
-        $scope.ChatEngine.connect(new Date().getTime(), {}, 'auth-key');
+        $scope.ChatEngine.connect(new Date().getTime());
 
         $scope.ChatEngine.on('$.ready', (data) => {
 

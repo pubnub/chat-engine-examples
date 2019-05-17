@@ -25,7 +25,7 @@ function createWindow () {
   });
 
   // and load the index.html of the app.
-  win.loadURL('http://localhost:8080/chat-engine-examples/angular/flowtron/#!/dash/Main', {"extraHeaders" : "pragma: no-cache\n"})
+  win.loadURL('http://localhost:8080/angular/flowtron/#!/dash/Main', {"extraHeaders" : "pragma: no-cache\n"})
   // win.loadURL('http://google.com')
 
   // Open the DevTools.

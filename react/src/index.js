@@ -9,7 +9,7 @@ const SUBSCRIBE_KEY = '';
 
 // just making sure you're paying attention
 if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
-    throw new Error('You forgot to enter your keys')
+    throw new Error('You forgot to enter your keys');
 }
 
 const now = new Date().getTime();
@@ -24,7 +24,7 @@ const ChatEngine = ChatEngineCore.create({
 
 ChatEngine.connect(username, {
     signedOnTime: now
-}, 'auth-key');
+});
 
 var Message = React.createClass({
     render: function() {

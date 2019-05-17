@@ -43,7 +43,7 @@
 
         // just making sure you're paying attention
         if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
-            throw new Error('You forgot to enter your keys')
+            throw new Error('You forgot to enter your keys');
         }
 
         const username = ['user', new Date().getTime()].join('-');
@@ -63,7 +63,7 @@
 
         ChatEngine.on('$.ready', () => {
 
-            var chat = new ChatEngine.Chat('jquery-chat' + new Date().getTime(), false);
+            var chat = new ChatEngine.Chat('jquery-chat', false);
 
             $('#chat-input').submit(() => {
 
@@ -84,10 +84,12 @@
 
             chat.onAny((event, data) => {
                 console.log(event, data);
-            })
+            });
 
-            chat.search({
-                event: 'message'
+            chat.on('$.connected', () => {
+                chat.search({
+                    event: 'message'
+                });
             });
 
         });
