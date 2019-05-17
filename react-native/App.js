@@ -3,6 +3,15 @@ import { AppRegistry, Button, Text, TextInput, Image, View, FlatList, ListView, 
 import ChatEngineCore from 'chat-engine'
 import ChatEngineGravatar from 'chat-engine-gravatar'
 
+// WARNING: PUBNUB KEYS REQUIRED FOR EXAMPLE TO FUNCTION
+const PUBLISH_KEY = '';
+const SUBSCRIBE_KEY = '';
+
+// just making sure you're paying attention
+if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
+    throw new Error('You forgot to enter your keys')
+}
+
 const now = new Date().getTime();
 const username = ['user', now].join('-');
 

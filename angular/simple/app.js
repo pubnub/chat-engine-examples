@@ -1,9 +1,18 @@
 angular.module('chatApp', ['open-chat-framework'])
     .run(['$rootScope', 'ngChatEngine', function($rootScope, ngChatEngine) {
 
+        // WARNING: PUBNUB KEYS REQUIRED FOR EXAMPLE TO FUNCTION
+        const PUBLISH_KEY = '';
+        const SUBSCRIBE_KEY = '';
+
+        // just making sure you're paying attention
+        if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
+            throw new Error('You forgot to enter your keys')
+        }
+
         $rootScope.ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-            subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+            publishKey: PUBLISH_KEY,
+            subscribeKey: SUBSCRIBE_KEY
         }, {
             debug: true,
             globalChannel: 'chat-engine-angular-simple'

@@ -37,8 +37,14 @@ Open javascript/desktop.js, find the following code snippet (its a the top of th
 ```javascript
 // Be sure to replace empty strings with your own App's Publish & Subscribe keys
 // otherwise the demo keys will be used.
-let userPubKey = '' || 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b';
-let userSubKey = '' || 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518';
+// WARNING: PUBNUB KEYS REQUIRED FOR EXAMPLE TO FUNCTION
+const PUBLISH_KEY = '';
+const SUBSCRIBE_KEY = '';
+
+// just making sure you're paying attention
+if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
+    throw new Error('You forgot to enter your keys')
+}
 ```
 Be wary when instantiating ChatEngine with argument `debug`:`true`. Leaving the option `true` will output `console.debug()` statements to the browser running the client. With greater load, this flag will cause delays and slowness. Be sure to set debug: `false` or simply don't include the arg (defaults to `false`).
 

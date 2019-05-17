@@ -3,12 +3,21 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import ChatEngineCore from 'chat-engine'
 
+// WARNING: PUBNUB KEYS REQUIRED FOR EXAMPLE TO FUNCTION
+const PUBLISH_KEY = '';
+const SUBSCRIBE_KEY = '';
+
+// just making sure you're paying attention
+if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
+    throw new Error('You forgot to enter your keys');
+}
+
 const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: '',
-    subscribeKey: ''
+    publishKey: PUBLISH_KEY,
+    subscribeKey: SUBSCRIBE_KEY
 }, {
     globalChannel: 'chat-engine-react'
 });

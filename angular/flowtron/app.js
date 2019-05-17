@@ -1,3 +1,12 @@
+// WARNING: PUBNUB KEYS REQUIRED FOR EXAMPLE TO FUNCTION
+const PUBLISH_KEY = '';
+const SUBSCRIBE_KEY = '';
+
+// just making sure you're paying attention
+if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
+    throw new Error('You forgot to enter your keys');
+}
+
 let sounds = {
     send: new Audio("send.wav"),
     broadcast: new Audio("broadcast.wav")
@@ -60,8 +69,8 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
         // ChatEngine Configure
         const ChatEngine = ChatEngineCore.create({
-            publishKey: userPubKey,
-            subscribeKey: userSubKey
+            publishKey: PUBLISH_KEY,
+            subscribeKey: SUBSCRIBE_KEY
         }, {
             debug: true,
             globalChannel: 'chat-engine-flowtron'
