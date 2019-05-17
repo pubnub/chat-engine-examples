@@ -7,27 +7,26 @@ const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+    publishKey: '',
+    subscribeKey: ''
 }, {
     globalChannel: 'chat-engine-react'
 });
 
 ChatEngine.connect(username, {
     signedOnTime: now
-}, 'auth-key');
+});
 
-class Message extends React.Component{
-    render () {
+var Message = React.createClass({
+    render: function() {
         return ( <
             div > { this.props.uuid }: { this.props.text } <
             /div>
         );
     }
-};
+});
 
-var createReactClass = require('create-react-class');
-var Chat = createReactClass({
+var Chat = React.createClass({
 
     getInitialState: function() {
         return {
@@ -61,7 +60,7 @@ var Chat = createReactClass({
             let messages = this.state.messages;
 
             messages.push( <
-                Message key={ this.state.messages.length } uuid={ payload.sender.uuid } text={ payload.data.text }
+                Message key = { this.state.messages.length } uuid = { payload.sender.uuid } text = { payload.data.text }
                 />
             );
 
@@ -83,14 +82,14 @@ var Chat = createReactClass({
         return ( <
             div >
             <
-            div id="chat-output" > { this.state.messages } < /div> <
-            input id="chat-input"
-            type="text"
-            name=""
-            value={ this.state.chatInput } onChange={ this.setChatInput } onKeyPress={ this._handleKeyPress }
+            div id = "chat-output" > { this.state.messages } < /div> <
+            input id = "chat-input"
+            type = "text"
+            name = ""
+            value = { this.state.chatInput } onChange = { this.setChatInput } onKeyPress = { this._handleKeyPress }
             /> <
-            input type="button"
-            onClick={ this.sendChat } value="Send Chat" / >
+            input type = "button"
+            onClick = { this.sendChat } value = "Send Chat" / >
             <
             /div>
         );
