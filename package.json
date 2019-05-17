@@ -1,24 +1,21 @@
 {
   "name": "chat-engine-examples",
   "version": "0.0.1",
-  "description": "Examples of Chat Engine for a ton of frameworks",
+  "description": "Examples of ChatEngine for many popular frameworks",
   "main": "index.html",
   "dependencies": {
-    "chat-engine": "^0.8.4",
-    "chat-engine-desktop-notifications": "0.0.x",
-    "chat-engine-emoji": "0.0.x",
-    "chat-engine-markdown": "0.0.x",
-    "chat-engine-online-user-search": "0.0.7",
-    "chat-engine-random-username": "0.0.4",
-    "chat-engine-typing-indicator": "0.0.x",
-    "chat-engine-unread-messages": "0.0.x",
-    "node-libs-react-native": "^1.0.1",
+    "chat-engine": "^0.9.21",
+    "chat-engine-desktop-notifications": "^0.0.7",
+    "chat-engine-emoji": "^0.0.8",
+    "chat-engine-markdown": "^0.0.8",
+    "chat-engine-online-user-search": "^0.0.7",
+    "chat-engine-random-username": "^0.0.4",
+    "chat-engine-typing-indicator": "^0.0.9",
+    "chat-engine-unread-messages": "^0.0.8",
+    "node-libs-react-native": "^1.0.3",
     "react": "15.4.2",
     "react-dom": "15.4.2"
   },
   "devDependencies": {},
-  "scripts": {
-    "deploy": "surge --domain https://chat-engine-examples.surge.sh"
-  },
   "author": "Ian Jennings"
 }

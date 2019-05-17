@@ -6,9 +6,17 @@ import ChatEngineGravatar from 'chat-engine-gravatar'
 const now = new Date().getTime();
 const username = ['user', now].join('-');
 
+const PUBLISH_KEY = '';
+const SUBSCRIBE_KEY = '';
+
+if (PUBLISH_KEY == '' || SUBSCRIBE_KEY == '') {
+    console.log('Please add \'PUBLISH_KEY\' and or \'SUBSCRIBE_KEY\'');
+    process.exit(1);
+}
+
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+    publishKey: '',
+    subscribeKey: ''
 }, {
     globalChannel: 'react-native-demo',
     debug: true
@@ -78,7 +86,7 @@ export default class PizzaTranslator extends Component {
     render() {
 
         return (
-            <View style = { { padding: 10 } } >
+            <View style = { { padding: 10, flex: 1 } } >
             <ListView dataSource = { this.state.dataSource } renderRow = {
                 (rowData) =>
                     <View>
@@ -87,18 +95,21 @@ export default class PizzaTranslator extends Component {
                     </View>
                 } />
             <TextInput
-                style = { { height: 40 } }
+                style = {{ height: 40, top: 100 , flex: 2}}
                 placeholder = "Enter Chat Message Here!"
                 onChangeText = {
                     (text) => this.setChatInput(text) }
                 value = { this.state.chatInput }
             />
-            <Button
-                onPress = {
-                    () => { this.sendChat() } }
-                title = "Send"
-                color = "#841584"
-            />
+            <View style={{ flex: 3  }}>
+                <Button
+                    onPress = {
+                        () => { this.sendChat() } }
+                    title = "Send"
+                    color = "#841584"
+                    style = {{ top: 200 }}
+                />
+            </View>
         </View>)
 
         }

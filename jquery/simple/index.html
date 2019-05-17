@@ -40,8 +40,8 @@
         const username = ['user', new Date().getTime()].join('-');
 
         const ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-            subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+            publishKey: '',
+            subscribeKey: ''
         }, {
             globalChannel: 'chat-engine-jquery'
         });
@@ -54,7 +54,7 @@
 
         ChatEngine.on('$.ready', () => {
 
-            var chat = new ChatEngine.Chat('jquery-chat' + new Date().getTime(), false);
+            var chat = new ChatEngine.Chat('jquery-chat', false);
 
             $('#chat-input').submit(() => {
 
@@ -75,10 +75,12 @@
 
             chat.onAny((event, data) => {
                 console.log(event, data);
-            })
+            });
 
-            chat.search({
-                event: 'message'
+            chat.on('$.connected', () => {
+                chat.search({
+                    event: 'message'
+                });
             });
 
         });

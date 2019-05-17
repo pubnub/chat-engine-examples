@@ -47,10 +47,21 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
     })
     .factory('ChatEngine', function(ngChatEngine) {
 
+        const userPubKey = '';
+        const userSubKey = '';
+
+        if (userPubKey === '') {
+            throw Error('No PubKey Provided')
+        }
+
+        if (userSubKey === '') {
+            throw Error('No SubKey Provided')
+        }
+
         // ChatEngine Configure
         const ChatEngine = ChatEngineCore.create({
-            publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-            subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+            publishKey: userPubKey,
+            subscribeKey: userSubKey
         }, {
             debug: true,
             globalChannel: 'chat-engine-flowtron'
@@ -164,7 +175,7 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                 room.chat.plugin(ChatEngineCore.plugin['chat-engine-emoji']());
                 room.chat.plugin(ChatEngineCore.plugin['chat-engine-markdown']());
-                room.chat.plugin(ChatEngineCore.plugin['chat-engine-typing-indicator']());
+                room.chat.plugin(ChatEngineCore.plugin['chat-engine-typing-indicator']({})); // TODO: fix dis.
                 room.chat.plugin(ChatEngineCore.plugin['chat-engine-unread-messages']());
                 room.chat.plugin(ChatEngineCore.plugin['chat-engine-desktop-notifications']({
                     title: (event) => {
@@ -207,12 +218,14 @@ angular.module('chatApp', ['open-chat-framework', 'auth0.lock', 'ui.router', 'ng
 
                 }
 
-                room.chat.search()
-                    .on('message', function(payload) {
-                        addMessage(payload, 'history');
-                    }).on('upload', function(payload) {
-                        addMessage(payload, 'upload');
-                    });
+                room.chat.on('$.connected', () => {
+                     room.chat.search()
+                        .on('message', function(payload) {
+                            addMessage(payload, 'history');
+                        }).on('upload', function(payload) {
+                            addMessage(payload, 'upload');
+                        });
+                });
 
                 room.chat.on('message', function(payload) {
 
