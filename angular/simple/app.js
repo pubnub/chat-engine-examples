@@ -7,7 +7,7 @@ angular.module('chatApp', ['open-chat-framework'])
 
         // just making sure you're paying attention
         if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
-            alert('You forgot to enter your keys');
+            throw new Error('You forgot to enter your keys')
         }
 
         $rootScope.ChatEngine = ChatEngineCore.create({

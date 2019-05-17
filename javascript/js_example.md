@@ -43,7 +43,7 @@ const SUBSCRIBE_KEY = '';
 
 // just making sure you're paying attention
 if (PUBLISH_KEY === '' || SUBSCRIBE_KEY === '') {
-    alert('You forgot to enter your keys');
+    throw new Error('You forgot to enter your keys')
 }
 ```
 Be wary when instantiating ChatEngine with argument `debug`:`true`. Leaving the option `true` will output `console.debug()` statements to the browser running the client. With greater load, this flag will cause delays and slowness. Be sure to set debug: `false` or simply don't include the arg (defaults to `false`).
