@@ -7,8 +7,8 @@ const now = new Date().getTime();
 const username = ['user', now].join('-');
 
 const ChatEngine = ChatEngineCore.create({
-    publishKey: 'pub-c-d8599c43-cecf-42ba-a72f-aa3b24653c2b',
-    subscribeKey: 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518'
+    publishKey: '',
+    subscribeKey: ''
 }, {
     globalChannel: 'chat-engine-react'
 });
