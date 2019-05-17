@@ -2,6 +2,7 @@
   "name": "chat-engine-examples",
   "version": "0.0.1",
   "description": "Examples of ChatEngine for many popular frameworks",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "index.html",
   "dependencies": {
     "chat-engine": "^0.9.21",
