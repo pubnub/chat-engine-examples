@@ -6,7 +6,7 @@ npm install
 
 ## To Run:
 
-First open the ```app.js``` file located ```../chat-engine-examples/angular/flowtron/app.js``` and replace the empty string value for both the ```userPubKey``` and ```userSubKey``` (app.js:50-51).
+First, open the ```app.js``` file located ```../chat-engine-examples/angular/flowtron/app.js``` and replace the empty string value for both the ```userPubKey``` and ```userSubKey``` (app.js:50-51).
 
 ```js
 // REPLACE EMPTY STRING WITH ChatEngine PUB/SUB keys
