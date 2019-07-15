@@ -138,7 +138,7 @@ To add a local dependency to the correct Flow version to a Create React Native A
 4. Add `// @flow` to any files you want to type check (for example, to `App.js`).
 
 Now you can run `npm run flow` (or `yarn flow`) to check the files for type errors.
-You can optionally use a [plugin for your IDE or editor](https://flow.org/en/docs/editors/) for a better integrated experience.
+You can optionally use a [plugin for your IDE or editor](https://flow.org/en/docs/editors/) for a better-integrated experience.
 
 To learn more about Flow, check out [its documentation](https://flow.org/).
 
@@ -175,7 +175,7 @@ If you have made use of Expo APIs while working on your project, then those API 
 
 ### Networking
 
-If you're unable to load your app on your phone due to a network timeout or a refused connection, a good first step is to verify that your phone and computer are on the same network and that they can reach each other. Create React Native App needs access to ports 19000 and 19001 so ensure that your network and firewall settings allow access from your device to your computer on both of these ports.
+If you're unable to load your app on your phone due to a network timeout or a refused connection, a good first step is to verify that your phone and computer are on the same network and that they can reach each other. Create React Native App needs access to ports 19000 and 19001 to ensure that your network and firewall settings allow access from your device to your computer on both of these ports.
 
 Try opening a web browser on your phone and opening the URL that the packager script prints, replacing `exp://` with `http://`. So, for example, if underneath the QR code in your terminal you see:
 

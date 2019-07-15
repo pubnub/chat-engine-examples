@@ -1,7 +1,7 @@
 # PubNub ChatEngine - Javascript Desktop Ex.
 
 ## Quick Setup
-Great news! You're moments away from running your very own ChatEngine client.. In case you missed it, please ensure you have setup ChatEngine via PubNub's (Quick Start)[https://www.pubnub.com/docs/tutorials/chatengine] guide. Doing so will allow you to use your own PubNub application keyset.
+Great news! You're moments away from running your very own ChatEngine client. In case you missed it, please ensure you have setup ChatEngine via PubNub's (Quick Start)[https://www.pubnub.com/docs/tutorials/chatengine] guide. Doing so will allow you to use your own PubNub application keyset.
 
 Ensure a static file server is running from the parent directory of the repo.
 If not, instantiate a static HTTP server from the project root (either NodeJS or Python):
@@ -27,7 +27,7 @@ Once the server is running, open the javascript/desktop.html file in your prefer
 
 To further experience the functionality of the Javascript ChatEngine example, open javascript/desktop.html in a local incognito browser to chat with yourself.
 
-It should be noted that upon refreshing the webpage, a new user will be created for you to impersonate. After refreshing the chat webpgae, please note that users previously created will linger for a small time before the client determines the previously created user instance is _offline_.
+It should be noted that upon refreshing the webpage, a new user will be created for you to impersonate. After refreshing the chat webpage, please note that users previously created will linger for a small time before the client determines the previously created user instance is _offline_.
 
 ## Personalization
 By now you should have one desktop client (or more) running locally. Time to inject your PubNub publish & subscribe keys into the application.
@@ -42,11 +42,11 @@ let userSubKey = '' || 'sub-c-6c6c021c-c4e2-11e7-9628-f616d8b03518';
 ```
 Be wary when instantiating ChatEngine with argument `debug`:`true`. Leaving the option `true` will output `console.debug()` statements to the browser running the client. With greater load, this flag will cause delays and slowness. Be sure to set debug: `false` or simply don't include the arg (defaults to `false`).
 
-Once finished, be sure to save the changes to javascript/desktop.js and refresh your browser. Once refreshed, the client application will utilize your personal PubNub keys to power ChatEngine. By removing the demo keys, you've setup a chat application which remains private to those who don't know your Publish & Subscribe keys.
+Once finished, be sure to save the changes to javascript/desktop.js and refresh your browser. Once refreshed, the client application will utilize your personal PubNub keys to power ChatEngine. By removing the demo keys, you've set up a chat application which remains private to those who don't know your Publish & Subscribe keys.
 
 
 ### User Presence
-Ideally a chat client would display whether or not users are online or offline. Thankfully PubNub's Presence feature provides such functionallity. Lets take a look at the `bindUsers()` function within javascript/desktop.js:
+Ideally, a chat client would display whether or not users are online or offline. Thankfully PubNub's Presence feature provides such functionality. Let's take a look at the `bindUsers()` function within javascript/desktop.js:
 
 ```javascript
 // add PubNub Presence: to display users [online|offline] state
@@ -75,7 +75,7 @@ bindUsers: function() {
 ```
 
 ### Chat History
-Currently the application does not render messages previously sent prior to invoking the current session. Thankfully CE allows one to easily populate the chat history with messages previously sent on a specified chat channel. To do so, uncomment the following snippet within below the `ready()` function within javacript/desktop.js:
+Currently, the application does not render messages previously sent prior to invoking the current session. Thankfully CE allows one to easily populate the chat history with messages previously sent on a specified chat channel. To do so, uncomment the following snippet within below the `ready()` function within javacript/desktop.js:
 
 ```javascript
 ready: function(data) {
@@ -107,7 +107,7 @@ ready: function(data) {
 CE provides many off the shelf plugins, in this example I'll provide you with the steps to add markdown rendering to your chat messages. Navigate to the `ready()` function and uncomment the following:
 
 ```Javascript
-// UNCOMMENT code below to enbale the 'markdown-plugin'
+// UNCOMMENT code below to enable the 'markdown-plugin'
 const markdown = ChatEngineCore.plugin['chat-engine-markdown']();
 this.chat.plugin(markdown);
 ```
